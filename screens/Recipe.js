@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -399,3 +400,26 @@ const Recipe = ({ navigation, route }) => {
 };
 
 export default Recipe;
+=======
+import React from 'react';
+import {
+    View,
+    Text
+} from 'react-native';
+
+const Recipe = () => {
+    return (
+        <View
+            style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}
+        >
+            <Text>Recipe</Text>
+        </View>
+    )
+}
+
+export default Recipe;
+>>>>>>> 4295452685d9c4ccff4e78be6f980f2c16682753

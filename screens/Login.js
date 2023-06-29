@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import {
   View,
@@ -115,3 +116,32 @@ const Login = ({ navigation }) => {
 };
 
 export default Login;
+=======
+import React from 'react';
+import {
+    View,
+    Text,
+    TouchableOpacity
+} from 'react-native';
+
+const Login = ({ navigation }) => {
+    return (
+        <View
+            style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}
+        >
+            <Text>Login</Text>
+            <TouchableOpacity
+                onPress={() => navigation.replace("Home")}
+            >
+                <Text>Navigate to Home</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
+export default Login;
+>>>>>>> 4295452685d9c4ccff4e78be6f980f2c16682753

@@ -27,12 +27,8 @@
     "react-native-linear-gradient": "^2.7.3",
     "react-native-reanimated": "~2.14.4",
     "react-native-safe-area-context": "^3.4.1",
-<<<<<<< Updated upstream
-    "react-native-screens": "^3.22.0"
-=======
+    "expo-linear-gradient": "~12.1.2",
     "react-native-screens": "^3.22.0",
-    "expo-linear-gradient": "~12.1.2"
->>>>>>> Stashed changes
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
