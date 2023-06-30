@@ -1,117 +1,123 @@
-import React from "react";
 import {
-  View,
+  StyleSheet,
   Text,
+  View,
+  SafeAreaView,
   TouchableOpacity,
-  ImageBackground,
-  StatusBar,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { images, COLORS, SIZES, FONTS } from "../constants";
-import CustomButton from "../components/CustomButton";
+import React from "react";
+import Background from "../components/Background";
+import { COLORS } from "../constants";
+import Field from "../components/Field";
+import Button from "../components/Button";
 
-const Login = ({ navigation }) => {
-  function renderHeader() {
-    return (
-      <View style={{ height: SIZES.height > 700 ? "65%" : "60%" }}>
-        <ImageBackground
-          source={images.loginBackground}
+const Login = (props) => {
+  return (
+    <Background>
+      <SafeAreaView
+        style={{
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Text
           style={{
-            flex: 1,
-            justifyContent: "flex-end",
+            color: "white",
+            fontSize: 54,
+            fontWeight: "bold",
+            marginVertical: 10,
           }}
-          resizeMode="cover"
         >
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            colors={[COLORS.transparent, COLORS.black]}
+          Login
+        </Text>
+        <View
+          style={{
+            backgroundColor: "white",
+            height: "100%",
+            width: "100%",
+            borderTopLeftRadius: 130,
+            paddingTop: 80,
+            alignItems: "center",
+          }}
+        >
+          <Text
             style={{
-              height: 200,
-              justifyContent: "flex-end",
-              paddingHorizontal: SIZES.padding,
+              fontSize: 30,
+              color: COLORS.darkGreen,
+              fontWeight: "bold",
+            }}
+          >
+            Welcome Back
+          </Text>
+          <Text
+            style={{
+              color: COLORS.gray,
+              fontSize: 16,
+              fontWeight: "bold",
+              marginBottom: 20,
+            }}
+          >
+            Login to your account
+          </Text>
+          <Field
+            placeholder="Email / Username"
+            keyboardType={"email-address"}
+          />
+          <Field placeholder="Password" secureTextEntry={true} />
+          <View
+            style={{
+              alignItems: "flex-end",
+              width: "78%",
+              paddingRight: 16,
+              marginBottom: "40%",
             }}
           >
             <Text
               style={{
-                width: "80%",
-                color: COLORS.white,
-                ...FONTS.largeTitle,
-                lineHeight: 45,
-                fontWeight: 600,
+                color: COLORS.darkGreen,
+                fontWeight: "bold",
+                fontSize: 16,
               }}
             >
-              Cooking a Delicious Food Easily
+              Forgot Password ?
             </Text>
-          </LinearGradient>
-        </ImageBackground>
-      </View>
-    );
-  }
-
-  function renderDetail() {
-    return (
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: SIZES.padding,
-        }}
-      >
-        {/* Description */}
-        <Text
-          style={{
-            marginTop: SIZES.radius,
-            width: "70%",
-            color: COLORS.gray,
-            ...FONTS.body3,
-          }}
-        >
-          Discover more than 1200 food recipes in your hands and cooking it
-          easily
-        </Text>
-        {/* Button */}
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          {/* Login */}
-          <CustomButton
-            buttonText="Login"
-            buttonContainerStyle={{
-              paddingVertical: 18,
-              borderRadius: 20,
+          </View>
+          <Button
+            textColor={COLORS.white}
+            bgColor={COLORS.darkGreen}
+            btnLabel="Login"
+            Press={() => {
+              alert("Logged In");
             }}
-            colors={[COLORS.darkGreen, COLORS.lime]}
-            onPress={() => navigation.navigate("Home")}
           />
-          {/* Sign up */}
-          <CustomButton
-            buttonText="Sign up"
-            buttonContainerStyle={{
-              marginTop: SIZES.radius,
-              paddingVertical: 18,
-              borderRadius: 20,
-              borderColor: COLORS.darkLime,
-              borderWidth: 1,
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
             }}
-            colors={[]}
-            onPress={() => navigation.navigate("Home")}
-          />
+          >
+            <Text style={{ fontSize: 16 }}>Don't have an account ? </Text>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("Signup")}
+            >
+              <Text
+                style={{
+                  color: COLORS.darkGreen,
+                  fontWeight: "bold",
+                  fontSize: 16,
+                }}
+              >
+                Signup
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    );
-  }
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: COLORS.black,
-      }}
-    >
-      <StatusBar barStyle="light-content" />
-      {/* Header */}
-      {renderHeader()}
-      {/* Detail */}
-      {renderDetail()}
-    </View>
+      </SafeAreaView>
+    </Background>
   );
 };
 
 export default Login;
+
+const styles = StyleSheet.create({});
