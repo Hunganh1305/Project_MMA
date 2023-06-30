@@ -36,7 +36,7 @@ const Login = (props) => {
             height: "100%",
             width: "100%",
             borderTopLeftRadius: 130,
-            paddingTop: 80,
+            paddingTop: 70,
             alignItems: "center",
           }}
         >
@@ -60,7 +60,7 @@ const Login = (props) => {
             Login to your account
           </Text>
           <Field
-            placeholder="Email / Username"
+            placeholder="Email"
             keyboardType={"email-address"}
           />
           <Field placeholder="Password" secureTextEntry={true} />
@@ -69,7 +69,7 @@ const Login = (props) => {
               alignItems: "flex-end",
               width: "78%",
               paddingRight: 16,
-              marginBottom: "40%",
+              marginBottom: "47%",
             }}
           >
             <Text

@@ -10,7 +10,7 @@ export default function Button({ bgColor, btnLabel, textColor, Press }) {
         borderRadius: 100,
         alignItems: "center",
         width: "76%",
-        height: "5%",
+        height: "4%",
         justifyContent: "center",
         marginVertical: 10,
       }}
