@@ -36,15 +36,23 @@ const RecipeCardDetails = ({ recipeItem }) => {
         >
           {recipeItem.name}
         </Text>
-        <Image
-          source={recipeItem.isBookmark ? icons.bookmarkFilled : icons.bookmark}
-          style={{
-            width: 20,
-            height: 20,
-            marginRight: SIZES.base,
-            tintColor: COLORS.darkGreen,
+        <TouchableOpacity
+          onPress={() => {
+            console.log("favourite");
           }}
-        />
+        >
+          <Image
+            source={
+              recipeItem.isBookmark ? icons.bookmarkFilled : icons.bookmark
+            }
+            style={{
+              width: 20,
+              height: 20,
+              marginRight: SIZES.base,
+              tintColor: COLORS.darkGreen,
+            }}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Duration & Serving */}
@@ -54,7 +62,7 @@ const RecipeCardDetails = ({ recipeItem }) => {
           ...FONTS.body4,
         }}
       >
-        {recipeItem.duration} | {recipeItem.serving} Serving
+        {recipeItem.servingTime} min | {recipeItem.servingSize} Serving
       </Text>
     </View>
   );
@@ -96,7 +104,7 @@ const TrendingCard = ({ containerStyle, recipeItem, onPress }) => {
     >
       {/* Background Image */}
       <Image
-        source={recipeItem.image}
+        source={{ uri: `${recipeItem.img}` }}
         resizeMode="cover"
         style={{
           width: 250,
@@ -124,7 +132,7 @@ const TrendingCard = ({ containerStyle, recipeItem, onPress }) => {
             ...FONTS.h4,
           }}
         >
-          {recipeItem.category}
+          {recipeItem.category.name}
         </Text>
       </View>
 

@@ -59,10 +59,7 @@ const Login = (props) => {
           >
             Login to your account
           </Text>
-          <Field
-            placeholder="Email"
-            keyboardType={"email-address"}
-          />
+          <Field placeholder="Email" keyboardType={"email-address"} />
           <Field placeholder="Password" secureTextEntry={true} />
           <View
             style={{
@@ -87,7 +84,7 @@ const Login = (props) => {
             bgColor={COLORS.darkGreen}
             btnLabel="Login"
             Press={() => {
-              alert("Logged In");
+              props.navigation.navigate("Home");
             }}
           />
           <View

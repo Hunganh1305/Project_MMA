@@ -18,7 +18,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
     >
       {/* Image */}
       <Image
-        source={categoryItem.image}
+        source={{ uri: `${categoryItem.img}` }}
         resizeMode="cover"
         style={{ width: 100, height: 100, borderRadius: SIZES.radius }}
       />
@@ -48,7 +48,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
             ...FONTS.h4,
           }}
         >
-          {categoryItem.duration} | {categoryItem.serving} Servings
+          {categoryItem.servingTime} min | {categoryItem.servingSize} Servings
         </Text>
       </View>
     </TouchableOpacity>

@@ -209,9 +209,10 @@ const Recipe = ({ navigation, route }) => {
         }}
       >
         {/* Background Image */}
+
         <Animated.Image
-          source={selectedRecipe?.image}
-          resizeMode="contain"
+          source={{ uri: selectedRecipe?.img }}
+          resizeMode="cover"
           style={{
             height: HEADER_HEIGHT,
             width: "200%",
@@ -277,14 +278,15 @@ const Recipe = ({ navigation, route }) => {
           <Text
             style={{ marginTop: 5, color: COLORS.lightGray2, ...FONTS.body4 }}
           >
-            {selectedRecipe?.duration} | {selectedRecipe?.serving} Serving
+            {selectedRecipe?.servingTime} min | {selectedRecipe?.servingSize}{" "}
+            Serving
           </Text>
         </View>
 
         {/* Viewers */}
-        <View style={{ flex: 1, justifyContent: "center" }}>
+        {/* <View style={{ flex: 1, justifyContent: "center" }}>
           <Viewers viewersList={selectedRecipe?.viewers} />
-        </View>
+        </View> */}
       </View>
     );
   }
@@ -360,7 +362,7 @@ const Recipe = ({ navigation, route }) => {
               }}
             >
               <Image
-                source={item.icon}
+                source={{ uri: item.ingredient.img }}
                 style={{
                   height: 40,
                   width: 40,
@@ -375,12 +377,12 @@ const Recipe = ({ navigation, route }) => {
                 justifyContent: "center",
               }}
             >
-              <Text style={{ ...FONTS.body3 }}>{item.description}</Text>
+              <Text style={{ ...FONTS.body3 }}>{item.name}</Text>
             </View>
 
             {/* Quantity */}
             <View style={{ alignItems: "flex-end", justifyContent: "center" }}>
-              <Text style={{ ...FONTS.body3 }}>{item.quantity}</Text>
+              <Text style={{ ...FONTS.body3 }}>{item.amount}</Text>
             </View>
           </View>
         )}
