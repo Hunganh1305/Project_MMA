@@ -42,11 +42,6 @@ const Home = ({ navigation }) => {
   );
 
   useEffect(() => {
-    console.log(
-      `https://recipeapp-6vxr.onrender.com/recipe?search=${search}${
-        category === "" ? "" : "&category=" + category._id
-      }&page=${page}&limit=4`
-    );
     fetch(
       `https://recipeapp-6vxr.onrender.com/recipe?search=${search}${
         category === "" ? "" : "&category=" + category._id
