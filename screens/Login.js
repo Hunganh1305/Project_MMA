@@ -5,13 +5,35 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Background from "../components/Background";
 import { COLORS } from "../constants";
 import Field from "../components/Field";
 import Button from "../components/Button";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Login = (props) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const user = await AsyncStorage.getItem("user");
+          if (user !== null) {
+            props.navigation.navigate("Home");
+            return;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }, [])
+  );
+
   return (
     <Background>
       <SafeAreaView
@@ -59,16 +81,32 @@ const Login = (props) => {
           >
             Login to your account
           </Text>
+          {error && (
+            <Text
+              style={{
+                color: "red",
+                fontSize: 16,
+                fontWeight: "bold",
+                marginBottom: 20,
+              }}
+            >
+              {error}
+            </Text>
+          )}
+
           <Field
-            iconName="email-outline"
-            placeholder="Enter your email address"
-            label="Email"
+            onChangeText={(username) => {
+              setUsername(username);
+            }}
+            placeholder="username"
+            keyboardType={"text"}
           />
           <Field
-            iconName="lock-outline"
-            placeholder="Enter your password"
-            label="Password"
-            password
+            onChangeText={(password) => {
+              setPassword(password);
+            }}
+            placeholder="Password"
+            secureTextEntry={true}
           />
           <View
             style={{
@@ -93,7 +131,46 @@ const Login = (props) => {
             bgColor={COLORS.darkGreen}
             btnLabel="Login"
             Press={() => {
-              props.navigation.navigate("Home");
+              setError("");
+              if (username === "") {
+                setError("Username required !");
+                return;
+              }
+              if (password === "") {
+                setError("Password required !");
+                return;
+              }
+              fetch("https://recipeapp-6vxr.onrender.com/auth/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  username: username,
+                  password: password,
+                }),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  if (data.success === false) {
+                    setError(data.message);
+                    return;
+                  }
+                  (async () => {
+                    try {
+                      await AsyncStorage.setItem(
+                        "user",
+                        JSON.stringify(data.userInfo)
+                      );
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  })();
+                  props.navigation.navigate("Home");
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             }}
           />
           <View

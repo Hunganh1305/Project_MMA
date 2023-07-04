@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,26 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { images, COLORS, SIZES, FONTS } from "../constants";
 import CustomButton from "../components/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Starter = ({ navigation }) => {
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const user = await AsyncStorage.getItem("user");
+          if (user !== null) {
+            props.navigation.navigate("Home");
+            return;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }, [])
+  );
+
   function renderHeader() {
     return (
       <View style={{ height: SIZES.height > 700 ? "65%" : "60%" }}>
