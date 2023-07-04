@@ -68,22 +68,22 @@ const Home = ({ navigation }) => {
   function renderHeader() {
     const [open, setOpen] = useState(false);
     const guestModal = [
-      { id: 1, display: "Profile", navigate: "/Profile" },
-      { id: 2, display: "Favourite", navigate: "/Favourite" },
+      { id: 1, display: "Profile", navigate: "Profile" },
+      { id: 2, display: "Favourite", navigate: "Favourite" },
       { id: 3, display: "Logout", navigate: "" },
     ];
 
     const cookerModal = [
-      { id: 1, display: "Profile", navigate: "/Profile" },
-      { id: 2, display: "Favourite", navigate: "/Favourite" },
-      { id: 3, display: "Add recipe", navigate: "/AddFavourite" },
+      { id: 1, display: "Profile", navigate: "Profile" },
+      { id: 2, display: "Favourite", navigate: "Favourite" },
+      { id: 3, display: "Add recipe", navigate: "AddFavourite" },
       { id: 4, display: "Logout", navigate: "" },
     ];
 
     const adminModal = [
-      { id: 1, display: "Profile", navigate: "/Profile" },
-      { id: 2, display: "Favourite", navigate: "/Favourite" },
-      { id: 3, display: "Mange recipe", navigate: "/Favourite" },
+      { id: 1, display: "Profile", navigate: "Profile" },
+      { id: 2, display: "Favourite", navigate: "Favourite" },
+      { id: 3, display: "Mange recipe", navigate: "Manage" },
       { id: 4, display: "Logout", navigate: "" },
     ];
 
