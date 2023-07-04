@@ -23,7 +23,7 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     fetch(
-      `http://10.0.3.2:8800/recipe?search=${search}${
+      `http://localhost:8800/recipe?search=${search}${
         category === "" ? "" : "&category=" + category._id
       }&page=${page}&limit=4`
     )
@@ -37,7 +37,7 @@ const Home = ({ navigation }) => {
   }, [category, search]);
 
   useEffect(() => {
-    fetch(`http://10.0.3.2:8800/category`)
+    fetch(`http://localhost:8800/category`)
       .then((res) => res.json())
       .then((data) => {
         setCateList([{ _id: 0, name: "All" }, ...data]);
@@ -197,7 +197,7 @@ const Home = ({ navigation }) => {
     const [trendingRecipe, setTrendingRecipe] = useState([]);
 
     useEffect(() => {
-      fetch("http://10.0.3.2:8800/recipe?page=1&limit=4")
+      fetch("http://localhost:8800/recipe?page=1&limit=4")
         .then((res) => res.json())
         .then((data) => {
           setTrendingRecipe(data.recipes);
@@ -413,7 +413,7 @@ const Home = ({ navigation }) => {
                   onPress={() => {
                     setPage(page + 1);
                     fetch(
-                      `http://10.0.3.2:8800/recipe?search=${search}&category=${category}&page=${
+                      `http://localhost:8800/recipe?search=${search}&category=${category}&page=${
                         page + 1
                       }&limit=4`
                     )

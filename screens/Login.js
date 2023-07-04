@@ -59,14 +59,23 @@ const Login = (props) => {
           >
             Login to your account
           </Text>
-          <Field placeholder="Email" keyboardType={"email-address"} />
-          <Field placeholder="Password" secureTextEntry={true} />
+          <Field
+            iconName="email-outline"
+            placeholder="Enter your email address"
+            label="Email"
+          />
+          <Field
+            iconName="lock-outline"
+            placeholder="Enter your password"
+            label="Password"
+            password
+          />
           <View
             style={{
               alignItems: "flex-end",
-              width: "78%",
-              paddingRight: 16,
-              marginBottom: "47%",
+              width: "80%",
+              paddingRight: "2%",
+              marginBottom: "45%",
             }}
           >
             <Text

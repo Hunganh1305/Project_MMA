@@ -7,7 +7,7 @@ import {
   Animated,
   Platform,
 } from "react-native";
-import { BlurView } from "@react-native-community/blur";
+import { BlurView } from "expo-blur";
 import { SIZES, FONTS, COLORS, icons } from "../constants";
 import { Viewers } from "../components";
 const HEADER_HEIGHT = 350;
@@ -56,7 +56,7 @@ const RecipeCreatorCardDetail = ({ selectedRecipe }) => {
 const RecipeCreatorCardInfo = ({ selectedRecipe }) => {
   if (Platform.OS === "ios") {
     return (
-      <BlurView style={{ flex: 1, borderRadius: SIZES.radius }} blurType="dark">
+      <BlurView style={{ flex: 1, borderRadius: SIZES.radius }} tint="dark">
         <RecipeCreatorCardDetail selectedRecipe={selectedRecipe} />
       </BlurView>
     );
