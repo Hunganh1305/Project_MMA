@@ -16,7 +16,7 @@ import Button from "../components/Button";
 const Signup = (props) => {
   const [inputs, setInputs] = useState({
     email: "",
-    fullname: "",
+    username: "",
     address: "",
     phone: "",
     password: "",
@@ -32,8 +32,8 @@ const Signup = (props) => {
       handleError("Please input valid email", "email");
       valid = false;
     }
-    if (!inputs.fullname) {
-      handleError("Please input fullname", "fullname");
+    if (!inputs.username) {
+      handleError("Please input username", "username");
       valid = false;
     }
     if (!inputs.address) {
@@ -52,17 +52,30 @@ const Signup = (props) => {
       valid = false;
     }
     if (valid) {
+      console.log("input: " + JSON.stringify(inputs));
       register();
     }
   };
-  const register = () => {};
+  const register = () => {
+    fetch("http://localhost:8800/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputs),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
   const handleOnChange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
   };
   const handleError = (errorMessage, input) => {
     setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
-  console.log(errors);
+  // console.log(errors);
   // console.log(inputs);
   return (
     <Background>
@@ -114,13 +127,13 @@ const Signup = (props) => {
           />
           <Field
             iconName="account-outline"
-            placeholder="Enter your fullname"
-            label="Fullname"
+            placeholder="Enter your username"
+            label="Username"
             error={errors.fullname}
             onFocus={() => {
-              handleError(null, "fullname");
+              handleError(null, "username");
             }}
-            onChangeText={(text) => handleOnChange(text, "fullname")}
+            onChangeText={(text) => handleOnChange(text, "username")}
           />
           <Field
             iconName="home-outline"
