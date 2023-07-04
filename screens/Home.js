@@ -12,6 +12,7 @@ import { FONTS, COLORS, SIZES, icons, images, dummyData } from "../constants";
 import { CategoryCard, TrendingCard } from "../components";
 import { useFocusEffect } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = ({ navigation }) => {
   const [search, setSearch] = useState("");
@@ -21,9 +22,29 @@ const Home = ({ navigation }) => {
   const [result, setResult] = useState([]);
   const [cateList, setCateList] = useState([]);
 
+  const [user, setUser] = useState(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const user = await AsyncStorage.getItem("user");
+          console.log(user);
+          if (user === null) {
+            navigation.navigate("Login");
+            return;
+          }
+          setUser(user);
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }, [])
+  );
+
   useEffect(() => {
     fetch(
-      `http://10.0.3.2:8800/recipe?search=${search}${
+      `https://recipeapp-6vxr.onrender.com/recipe?search=${search}${
         category === "" ? "" : "&category=" + category._id
       }&page=${page}&limit=4`
     )
@@ -37,7 +58,7 @@ const Home = ({ navigation }) => {
   }, [category, search]);
 
   useEffect(() => {
-    fetch(`http://10.0.3.2:8800/category`)
+    fetch(`https://recipeapp-6vxr.onrender.com/category`)
       .then((res) => res.json())
       .then((data) => {
         setCateList([{ _id: 0, name: "All" }, ...data]);
@@ -46,6 +67,12 @@ const Home = ({ navigation }) => {
   }, []);
 
   function renderHeader() {
+    const [open, setOpen] = useState(false);
+    const guestModal = [
+      { id: 1, display: "Profile", navigate: "/Profile" },
+      { id: 2, display: "Favourite", navigate: "/Favourite" },
+      { id: 3, display: "Logout", navigate: "" },
+    ];
     return (
       <View
         style={{
@@ -81,14 +108,73 @@ const Home = ({ navigation }) => {
         {/* Image */}
         <TouchableOpacity
           onPress={() => {
-            console.log("Profile");
+            setOpen(!open);
           }}
         >
-          <Image
-            source={images.profile}
-            style={{ width: 40, height: 40, borderRadius: 20 }}
-          ></Image>
+          {user &&
+            (user.img ? (
+              <Image
+                source={{ uri: user.img }}
+                style={{ width: 40, height: 40, borderRadius: 20 }}
+              ></Image>
+            ) : (
+              <Image
+                resizeMode="contain"
+                source={{
+                  uri: "https://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png",
+                }}
+                style={{ width: 40, height: 40, borderRadius: 20 }}
+              ></Image>
+            ))}
         </TouchableOpacity>
+        {open && (
+          <View
+            style={{
+              position: "absolute",
+              backgroundColor: COLORS.white,
+              width: 100,
+              height: 120,
+              right: 0,
+              bottom: -110,
+              elevation: Platform.OS === "android" ? 20 : 0,
+              overflow: "hidden",
+              flexGrow: 1,
+              borderRadius: 8,
+              zIndex: 99999999,
+            }}
+          >
+            <FlatList
+              data={guestModal}
+              keyExtractor={(item) => `${item.id}`}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    style={{ marginHorizontal: 10, marginVertical: 8 }}
+                    onPress={() => {
+                      if (item.display === "Logout") {
+                        (async () => {
+                          try {
+                            await AsyncStorage.removeItem("user");
+                            navigation.navigate("Login");
+                            return;
+                          } catch (error) {
+                            console.log(error);
+                          }
+                        })();
+                      }
+                      navigation.navigate(item.navigate);
+                      setOpen(!open);
+                    }}
+                  >
+                    <Text style={{ fontSize: 16, fontWeight: 500 }}>
+                      {item.display}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        )}
       </View>
     );
   }
@@ -197,7 +283,7 @@ const Home = ({ navigation }) => {
     const [trendingRecipe, setTrendingRecipe] = useState([]);
 
     useEffect(() => {
-      fetch("http://10.0.3.2:8800/recipe?page=1&limit=4")
+      fetch("https://recipeapp-6vxr.onrender.com/recipe?page=1&limit=4")
         .then((res) => res.json())
         .then((data) => {
           setTrendingRecipe(data.recipes);
@@ -272,7 +358,6 @@ const Home = ({ navigation }) => {
         {/* View all */}
         <TouchableOpacity
           onPress={() => {
-            console.log(cateList);
             setOpenModal(!openModal);
           }}
         >
@@ -413,7 +498,7 @@ const Home = ({ navigation }) => {
                   onPress={() => {
                     setPage(page + 1);
                     fetch(
-                      `http://10.0.3.2:8800/recipe?search=${search}&category=${category}&page=${
+                      `https://recipeapp-6vxr.onrender.com/recipe?search=${search}&category=${category}&page=${
                         page + 1
                       }&limit=4`
                     )
