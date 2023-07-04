@@ -29,12 +29,11 @@ const Home = ({ navigation }) => {
       (async () => {
         try {
           const user = await AsyncStorage.getItem("user");
-          console.log(user);
           if (user === null) {
             navigation.navigate("Login");
             return;
           }
-          setUser(user);
+          setUser(JSON.parse(user));
         } catch (error) {
           console.log(error);
         }
@@ -43,6 +42,11 @@ const Home = ({ navigation }) => {
   );
 
   useEffect(() => {
+    console.log(
+      `https://recipeapp-6vxr.onrender.com/recipe?search=${search}${
+        category === "" ? "" : "&category=" + category._id
+      }&page=${page}&limit=4`
+    );
     fetch(
       `https://recipeapp-6vxr.onrender.com/recipe?search=${search}${
         category === "" ? "" : "&category=" + category._id
@@ -73,6 +77,21 @@ const Home = ({ navigation }) => {
       { id: 2, display: "Favourite", navigate: "/Favourite" },
       { id: 3, display: "Logout", navigate: "" },
     ];
+
+    const cookerModal = [
+      { id: 1, display: "Profile", navigate: "/Profile" },
+      { id: 2, display: "Favourite", navigate: "/Favourite" },
+      { id: 3, display: "Add recipe", navigate: "/AddFavourite" },
+      { id: 4, display: "Logout", navigate: "" },
+    ];
+
+    const adminModal = [
+      { id: 1, display: "Profile", navigate: "/Profile" },
+      { id: 2, display: "Favourite", navigate: "/Favourite" },
+      { id: 3, display: "Mange recipe", navigate: "/Favourite" },
+      { id: 4, display: "Logout", navigate: "" },
+    ];
+
     return (
       <View
         style={{
@@ -91,7 +110,7 @@ const Home = ({ navigation }) => {
               ...FONTS.h2,
             }}
           >
-            Hello Quang,
+            Hello {user?.username},
           </Text>
           <Text
             style={{
@@ -127,7 +146,7 @@ const Home = ({ navigation }) => {
               ></Image>
             ))}
         </TouchableOpacity>
-        {open && (
+        {open && user.role === "Guest" && (
           <View
             style={{
               position: "absolute",
@@ -161,8 +180,110 @@ const Home = ({ navigation }) => {
                             console.log(error);
                           }
                         })();
+                      } else {
+                        navigation.navigate(item.navigate);
                       }
-                      navigation.navigate(item.navigate);
+                      setOpen(!open);
+                    }}
+                  >
+                    <Text style={{ fontSize: 16, fontWeight: 500 }}>
+                      {item.display}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        )}
+
+        {open && user.role === "Cooker" && (
+          <View
+            style={{
+              position: "absolute",
+              backgroundColor: COLORS.white,
+              width: 100,
+              height: 150,
+              right: 0,
+              bottom: -140,
+              elevation: Platform.OS === "android" ? 20 : 0,
+              overflow: "hidden",
+              flexGrow: 1,
+              borderRadius: 8,
+              zIndex: 99999999,
+            }}
+          >
+            <FlatList
+              data={cookerModal}
+              keyExtractor={(item) => `${item.id}`}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    style={{ marginHorizontal: 10, marginVertical: 8 }}
+                    onPress={() => {
+                      console.log("logout");
+                      if (item.display === "Logout") {
+                        (async () => {
+                          try {
+                            await AsyncStorage.removeItem("user");
+                            navigation.navigate("Login");
+                            return;
+                          } catch (error) {
+                            console.log(error);
+                          }
+                        })();
+                      } else {
+                        navigation.navigate(item.navigate);
+                      }
+                      setOpen(!open);
+                    }}
+                  >
+                    <Text style={{ fontSize: 16, fontWeight: 500 }}>
+                      {item.display}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        )}
+        {open && user.role === "Admin" && (
+          <View
+            style={{
+              position: "absolute",
+              backgroundColor: COLORS.white,
+              width: 120,
+              height: 150,
+              right: 0,
+              bottom: -140,
+              elevation: Platform.OS === "android" ? 20 : 0,
+              overflow: "hidden",
+              flexGrow: 1,
+              borderRadius: 8,
+              zIndex: 99999999,
+            }}
+          >
+            <FlatList
+              data={adminModal}
+              keyExtractor={(item) => `${item.id}`}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    style={{ marginHorizontal: 10, marginVertical: 8 }}
+                    onPress={() => {
+                      if (item.display === "Logout") {
+                        (async () => {
+                          try {
+                            await AsyncStorage.removeItem("user");
+                            navigation.navigate("Login");
+                            return;
+                          } catch (error) {
+                            console.log(error);
+                          }
+                        })();
+                      } else {
+                        navigation.navigate(item.navigate);
+                      }
+
                       setOpen(!open);
                     }}
                   >
@@ -395,9 +516,11 @@ const Home = ({ navigation }) => {
                     style={{ marginHorizontal: 10, marginVertical: 8 }}
                     onPress={() => {
                       if (item._id === 0) {
+                        setPage(1);
                         setCategory("");
                         setOpenModal(!openModal);
                       } else {
+                        setPage(1);
                         setCategory(item);
                         setOpenModal(!openModal);
                       }

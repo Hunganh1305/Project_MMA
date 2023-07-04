@@ -19,7 +19,7 @@ const Starter = ({ navigation }) => {
         try {
           const user = await AsyncStorage.getItem("user");
           if (user !== null) {
-            props.navigation.navigate("Home");
+            navigation.navigate("Home");
             return;
           }
         } catch (error) {
