@@ -4,14 +4,92 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  TextInput,
+  Keyboard,
+  Alert,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Background from "../components/Background";
 import { COLORS } from "../constants";
 import Field from "../components/Field";
 import Button from "../components/Button";
 
 const Signup = (props) => {
+  const [inputs, setInputs] = useState({
+    email: "",
+    username: "",
+    address: "",
+    phone: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
+  const validate = () => {
+    Keyboard.dismiss();
+    let valid = true;
+    if (!inputs.email) {
+      handleError("Please input email", "email");
+      valid = false;
+    } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
+      handleError("Please input valid email", "email");
+      valid = false;
+    }
+    if (!inputs.username) {
+      handleError("Please input username", "username");
+      valid = false;
+    }
+    if (!inputs.address) {
+      handleError("Please input address", "address");
+      valid = false;
+    }
+    if (!inputs.phone) {
+      handleError("Please input phone number", "phone");
+      valid = false;
+    }
+    if (!inputs.password) {
+      handleError("Please input password", "password");
+      valid = false;
+    } else if (inputs.password.length < 5) {
+      handleError("Min password length of 5", "password");
+      valid = false;
+    }
+    if (valid) {
+      console.log("input: " + JSON.stringify(inputs));
+      register();
+    }
+  };
+  const register = () => {
+    fetch("http://recipeapp-6vxr.onrender.com/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputs),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success === false) {
+          Alert.alert("OOPS !", data.message);
+          return;
+        }
+        Alert.alert("CONGRATES !", "Your account is created !", [
+          {
+            text: "Next",
+            onPress: () => {
+              props.navigation.navigate("Login");
+            },
+          },
+        ]);
+      });
+  };
+  const handleOnChange = (text, input) => {
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleError = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
+  // console.log(errors);
+  // console.log(inputs);
   return (
     <Background>
       <SafeAreaView
@@ -25,7 +103,7 @@ const Signup = (props) => {
             color: "white",
             fontSize: 54,
             fontWeight: "bold",
-            marginVertical: 10,
+            marginVertical: 8,
           }}
         >
           Register
@@ -35,7 +113,7 @@ const Signup = (props) => {
             color: "white",
             fontSize: 19,
             fontWeight: "bold",
-            marginBottom: 20,
+            marginBottom: 10,
           }}
         >
           Create a new account
@@ -50,19 +128,67 @@ const Signup = (props) => {
             alignItems: "center",
           }}
         >
-          <Field placeholder="User Name" />
-          <Field placeholder="Phone" keyboardType={"numeric"} />
-          <Field placeholder="Address" />
-          <Field placeholder="Email" keyboardType={"email-address"} />
-          <Field placeholder="Password" secureTextEntry={true} />
-          <Field placeholder="Confirm Password" secureTextEntry={true} />
+          <Field
+            iconName="email-outline"
+            placeholder="Enter your email address"
+            label="Email"
+            error={errors.email}
+            onFocus={() => {
+              handleError(null, "email");
+            }}
+            onChangeText={(text) => handleOnChange(text, "email")}
+          />
+          <Field
+            iconName="account-outline"
+            placeholder="Enter your username"
+            label="Username"
+            error={errors.username}
+            onFocus={() => {
+              handleError(null, "username");
+            }}
+            onChangeText={(text) => handleOnChange(text, "username")}
+          />
+          <Field
+            iconName="home-outline"
+            placeholder="Enter your address"
+            label="Address"
+            error={errors.address}
+            onFocus={() => {
+              handleError(null, "address");
+            }}
+            onChangeText={(text) => handleOnChange(text, "address")}
+          />
+          <Field
+            label="Phone"
+            placeholder="Enter your phone number"
+            keyboardType={"numeric"}
+            iconName="phone-outline"
+            error={errors.phone}
+            onFocus={() => {
+              handleError(null, "phone");
+            }}
+            onChangeText={(text) => handleOnChange(text, "phone")}
+          />
+          <Field
+            iconName="lock-outline"
+            placeholder="Enter your password"
+            label="Password"
+            password
+            error={errors.password}
+            onFocus={() => {
+              handleError(null, "password");
+            }}
+            onChangeText={(text) => handleOnChange(text, "password")}
+          />
+
+          {/* Text and Button */}
           <View
             style={{
               alignItems: "flex",
               flexDirection: "row",
               width: "78%",
               paddingRight: 16,
-              //   marginBottom: "40%",
+              // marginBottom: "4%",
             }}
           >
             <Text
@@ -106,6 +232,7 @@ const Signup = (props) => {
                 color: COLORS.darkGreen,
                 fontWeight: "bold",
                 fontSize: 12,
+                marginBottom: "4.7%",
               }}
             >
               Provacy Policy
@@ -115,9 +242,8 @@ const Signup = (props) => {
             textColor={COLORS.white}
             bgColor={COLORS.darkGreen}
             btnLabel="Signup"
-            Press={() => {
-              alert("Account Created !");
-              props.navigation.navigate("Login");
+            onPress={() => {
+              validate();
             }}
           />
           <View
