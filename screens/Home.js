@@ -76,7 +76,7 @@ const Home = ({ navigation }) => {
     const cookerModal = [
       { id: 1, display: "Profile", navigate: "Profile" },
       { id: 2, display: "Favourite", navigate: "Favourite" },
-      { id: 3, display: "Add recipe", navigate: "AddFavourite" },
+      { id: 3, display: "Add recipe", navigate: "AddRecipe" },
       { id: 4, display: "Logout", navigate: "" },
     ];
 
@@ -215,7 +215,6 @@ const Home = ({ navigation }) => {
                   <TouchableOpacity
                     style={{ marginHorizontal: 10, marginVertical: 8 }}
                     onPress={() => {
-                      console.log("logout");
                       if (item.display === "Logout") {
                         (async () => {
                           try {
