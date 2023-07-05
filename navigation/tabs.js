@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { TabIcon } from "../components";
 import { Home } from "../screens";
+import { Favourite } from "../screens";
 import { COLORS, icons } from "../constants";
 
 const Tab = createBottomTabNavigator();
@@ -57,8 +58,8 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
-        name="Bookmark"
-        component={Home}
+        name="Favourite"
+        component={Favourite}
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} icon={icons.bookmark} />

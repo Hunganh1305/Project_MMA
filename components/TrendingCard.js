@@ -10,7 +10,26 @@ import React from "react";
 import { SIZES, FONTS, COLORS, icons, images } from "../constants";
 import { BlurView } from "expo-blur";
 
-const RecipeCardDetails = ({ recipeItem }) => {
+const RecipeCardDetails = ({ recipeItem, user }) => {
+  function addToFav() {
+    const data = {
+      userId: user._id,
+      recipeId: recipeItem._id
+    }
+    fetch(`https://recipeapp-6vxr.onrender.com/user/favourite`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
+  }
+
   return (
     <View
       style={{
@@ -38,7 +57,7 @@ const RecipeCardDetails = ({ recipeItem }) => {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            console.log("favourite");
+            addToFav();
           }}
         >
           <Image
@@ -68,11 +87,11 @@ const RecipeCardDetails = ({ recipeItem }) => {
   );
 };
 
-const RecipeCardInfo = ({ recipeItem }) => {
+const RecipeCardInfo = ({ recipeItem , user }) => {
   if (Platform.OS === "ios") {
     return (
       <BlurView tint="dark" style={styles.recipeCardContainer}>
-        <RecipeCardDetails recipeItem={recipeItem} />
+        <RecipeCardDetails recipeItem={recipeItem} user={user}/>
       </BlurView>
     );
   } else {
@@ -83,13 +102,13 @@ const RecipeCardInfo = ({ recipeItem }) => {
           backgroundColor: COLORS.transparentDarkGray,
         }}
       >
-        <RecipeCardDetails recipeItem={recipeItem} />
+        <RecipeCardDetails recipeItem={recipeItem} user={user} />
       </View>
     );
   }
 };
 
-const TrendingCard = ({ containerStyle, recipeItem, onPress }) => {
+const TrendingCard = ({ containerStyle, recipeItem, onPress, user }) => {
   return (
     <TouchableOpacity
       style={{
@@ -137,7 +156,7 @@ const TrendingCard = ({ containerStyle, recipeItem, onPress }) => {
       </View>
 
       {/* Card info */}
-      <RecipeCardInfo recipeItem={recipeItem} />
+      <RecipeCardInfo recipeItem={recipeItem} user={user} />
     </TouchableOpacity>
   );
 };

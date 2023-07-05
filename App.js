@@ -1,5 +1,5 @@
 import React from "react";
-import { Starter, Recipe, Login, Signup } from "./screens";
+import { Starter, Recipe, Login, Signup, Favourite } from "./screens";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -21,6 +21,7 @@ export default function App() {
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Home" component={Tabs} />
         <Stack.Screen name="Recipe" component={Recipe} />
+        <Stack.Screen name="Favourite" component={Favourite} />
       </Stack.Navigator>
     </NavigationContainer>
   );

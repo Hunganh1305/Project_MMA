@@ -433,6 +433,7 @@ const Home = ({ navigation }) => {
           renderItem={({ item, index }) => {
             return (
               <TrendingCard
+                user={user}
                 recipeItem={item}
                 containerStyle={{
                   marginLeft: index === 0 ? SIZES.padding : 0,
