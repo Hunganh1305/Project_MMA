@@ -4,6 +4,8 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  Keyboard,
+  Alert,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import Background from "../components/Background";
@@ -14,9 +16,67 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 
 const Login = (props) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // const [username, setUsername] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [error, setError] = useState("");
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
+  const validate = () => {
+    Keyboard.dismiss();
+    let valid = true;
+
+    if (!inputs.username) {
+      handleError("Please input username", "username");
+      valid = false;
+    }
+
+    if (!inputs.password) {
+      handleError("Please input password", "password");
+      valid = false;
+    }
+    if (valid) {
+      console.log("input: " + JSON.stringify(inputs));
+      login();
+    }
+  };
+
+  const login = () => {
+    fetch("http://recipeapp-6vxr.onrender.com/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputs),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success === false) {
+          Alert.alert("OOPS !", data.message);
+          return;
+        }
+        (async () => {
+          try {
+            await AsyncStorage.setItem("user", JSON.stringify(data.userInfo));
+          } catch (error) {
+            console.log(error);
+          }
+        })();
+        props.navigation.navigate("Home");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handleOnChange = (text, input) => {
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleError = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -81,7 +141,7 @@ const Login = (props) => {
           >
             Login to your account
           </Text>
-          {error && (
+          {/* {error && (
             <Text
               style={{
                 color: "red",
@@ -92,21 +152,28 @@ const Login = (props) => {
             >
               {error}
             </Text>
-          )}
+          )} */}
 
           <Field
-            onChangeText={(username) => {
-              setUsername(username);
+            iconName="account-outline"
+            placeholder="Enter your username"
+            label="Username"
+            error={errors.username}
+            onFocus={() => {
+              handleError(null, "username");
             }}
-            placeholder="username"
-            keyboardType={"text"}
+            onChangeText={(text) => handleOnChange(text, "username")}
           />
           <Field
-            onChangeText={(password) => {
-              setPassword(password);
+            iconName="lock-outline"
+            placeholder="Enter your password"
+            label="Password"
+            password
+            error={errors.password}
+            onFocus={() => {
+              handleError(null, "password");
             }}
-            placeholder="Password"
-            secureTextEntry={true}
+            onChangeText={(text) => handleOnChange(text, "password")}
           />
           <View
             style={{
@@ -130,48 +197,49 @@ const Login = (props) => {
             textColor={COLORS.white}
             bgColor={COLORS.darkGreen}
             btnLabel="Login"
-            Press={() => {
-              setError("");
-              if (username === "") {
-                setError("Username required !");
-                return;
-              }
-              if (password === "") {
-                setError("Password required !");
-                return;
-              }
-              fetch("https://recipeapp-6vxr.onrender.com/auth/login", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  username: username,
-                  password: password,
-                }),
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  if (data.success === false) {
-                    setError(data.message);
-                    return;
-                  }
-                  (async () => {
-                    try {
-                      await AsyncStorage.setItem(
-                        "user",
-                        JSON.stringify(data.userInfo)
-                      );
-                    } catch (error) {
-                      console.log(error);
-                    }
-                  })();
-                  props.navigation.navigate("Home");
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
-            }}
+            onPress={validate}
+            // onPress={() => {
+            //   setError("");
+            //   if (username === "") {
+            //     setError("Username required !");
+            //     return;
+            //   }
+            //   if (password === "") {
+            //     setError("Password required !");
+            //     return;
+            //   }
+            //   fetch("https://recipeapp-6vxr.onrender.com/auth/login", {
+            //     method: "POST",
+            //     headers: {
+            //       "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({
+            //       username: username,
+            //       password: password,
+            //     }),
+            //   })
+            //     .then((res) => res.json())
+            //     .then((data) => {
+            //       if (data.success === false) {
+            //         setError(data.message);
+            //         return;
+            //       }
+            //       (async () => {
+            //         try {
+            //           await AsyncStorage.setItem(
+            //             "user",
+            //             JSON.stringify(data.userInfo)
+            //           );
+            //         } catch (error) {
+            //           console.log(error);
+            //         }
+            //       })();
+            //       props.navigation.navigate("Home");
+            //     })
+            //     .catch((err) => {
+            //       console.log(err);
+            //     });
+            // }}
           />
           <View
             style={{

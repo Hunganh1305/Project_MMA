@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   Keyboard,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import Background from "../components/Background";
@@ -57,7 +58,7 @@ const Signup = (props) => {
     }
   };
   const register = () => {
-    fetch("http://localhost:8800/auth/register", {
+    fetch("http://recipeapp-6vxr.onrender.com/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,6 +68,18 @@ const Signup = (props) => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        if (data.success === false) {
+          Alert.alert("OOPS !", data.message);
+          return;
+        }
+        Alert.alert("CONGRATES !", "Your account is created !", [
+          {
+            text: "Next",
+            onPress: () => {
+              props.navigation.navigate("Login");
+            },
+          },
+        ]);
       });
   };
   const handleOnChange = (text, input) => {
@@ -129,7 +142,7 @@ const Signup = (props) => {
             iconName="account-outline"
             placeholder="Enter your username"
             label="Username"
-            error={errors.fullname}
+            error={errors.username}
             onFocus={() => {
               handleError(null, "username");
             }}

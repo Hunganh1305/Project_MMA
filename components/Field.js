@@ -33,6 +33,7 @@ const Field = ({
           style={{ fontSize: 22, color: COLORS.darkGreen, marginRight: 10 }}
         ></Icon>
         <TextInput
+          autoCapitalize="none"
           secureTextEntry={hidePassword}
           {...props}
           style={{ color: COLORS.darkGreen, flex: 1 }}
