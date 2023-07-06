@@ -27,7 +27,7 @@ const Favourite = ({}) => {
             return;
           }
           setUser(JSON.parse(user));
-          fetchRecipeFromFav();
+          fetchRecipeFromFav(JSON.parse(user));
         } catch (error) {
           console.log(error);
         }
@@ -35,7 +35,7 @@ const Favourite = ({}) => {
     }, [])
   );
 
-  const fetchRecipeFromFav = () => {
+  const fetchRecipeFromFav = (user) => {
     fetch(`https://recipeapp-6vxr.onrender.com/user/${user._id}`)
       .then((res) => res.json())
       .then((response) => {
@@ -57,30 +57,30 @@ const Favourite = ({}) => {
       body: JSON.stringify(data),
     })
       .then(() => {
-        fetchRecipeFromFav();
+        fetchRecipeFromFav(user);
       })
       .catch((err) => console.log(err));
   }
 
   return (
     <SafeAreaView>
-      <ScrollView>
-        <View
+      <View
+        style={{
+          marginTop: 20,
+        }}
+      >
+        <Text
           style={{
-            marginTop: 20,
+            color: COLORS.darkGreen,
+            fontWeight: "bold",
+            ...FONTS.h1,
+            textAlign: "center",
           }}
         >
-          <Text
-            style={{
-              color: COLORS.darkGreen,
-              fontWeight: "bold",
-              ...FONTS.h1,
-              textAlign: "center",
-            }}
-          >
-            Favourite List
-          </Text>
-        </View>
+          Favourite List
+        </Text>
+      </View>
+      <ScrollView>
         {recipe.length === 0 ? (
           <View style={{ marginBottom: 20, marginTop: 30 }}>
             <View style={{ height: 200 }}>

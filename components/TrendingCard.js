@@ -6,26 +6,74 @@ import {
   Platform,
   StyleSheet,
 } from "react-native";
-import React from "react";
-import { SIZES, FONTS, COLORS, icons, images } from "../constants";
+import React, { useEffect, useState } from "react";
+import { SIZES, FONTS, COLORS, icons } from "../constants";
+import { useIsFocused } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 
 const RecipeCardDetails = ({ recipeItem, user }) => {
+  const [recipeExisted, setRecipeExisted] = useState([]);
+  const isFocused = useIsFocused();
+
+  const arrIdExisted = [];
+  const fetchRecipeFromFav = () => {
+    fetch(`https://recipeapp-6vxr.onrender.com/user/${user._id}`)
+      .then((res) => res.json())
+      .then((response) => {
+        response.user.favoriteRecipe.map((item) => {
+          arrIdExisted.push(item.recipe._id);
+        });
+        setRecipeExisted(arrIdExisted);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    fetchRecipeFromFav();
+  }, [isFocused]);
+
+  function handleFav() {
+    if (recipeExisted.includes(recipeItem._id)) {
+      removeFromFav();
+    } else {
+      addToFav();
+    }
+  }
+
   function addToFav() {
     const data = {
       userId: user._id,
-      recipeId: recipeItem._id
-    }
+      recipeId: recipeItem._id,
+    };
+
     fetch(`https://recipeapp-6vxr.onrender.com/user/favourite`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then((res) => res.json())
-      .then((response) => {
-        console.log(response);
+      .then(() => {
+        fetchRecipeFromFav();
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function removeFromFav() {
+    const data = {
+      userId: user._id,
+      recipeId: recipeItem._id,
+    };
+    fetch(`https://recipeapp-6vxr.onrender.com/user/favourite`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        fetchRecipeFromFav();
       })
       .catch((err) => console.log(err));
   }
@@ -57,12 +105,14 @@ const RecipeCardDetails = ({ recipeItem, user }) => {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            addToFav();
+            handleFav();
           }}
         >
           <Image
             source={
-              recipeItem.isBookmark ? icons.bookmarkFilled : icons.bookmark
+              recipeExisted.includes(recipeItem._id)
+                ? icons.bookmarkFilled
+                : icons.bookmark
             }
             style={{
               width: 20,
@@ -87,11 +137,11 @@ const RecipeCardDetails = ({ recipeItem, user }) => {
   );
 };
 
-const RecipeCardInfo = ({ recipeItem , user }) => {
+const RecipeCardInfo = ({ recipeItem, user }) => {
   if (Platform.OS === "ios") {
     return (
       <BlurView tint="dark" style={styles.recipeCardContainer}>
-        <RecipeCardDetails recipeItem={recipeItem} user={user}/>
+        <RecipeCardDetails recipeItem={recipeItem} user={user} />
       </BlurView>
     );
   } else {

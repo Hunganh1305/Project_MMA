@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { SIZES, FONTS, COLORS, icons } from "../constants";
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Viewers } from "../components";
 const HEADER_HEIGHT = 350;
 
@@ -77,12 +79,90 @@ const RecipeCreatorCardInfo = ({ selectedRecipe }) => {
 
 const Recipe = ({ navigation, route }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [user, setUser] = useState(null);
+  const [recipeExisted, setRecipeExisted] = useState([]);
+  const arrIdExisted = [];
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const user = await AsyncStorage.getItem("user");
+          if (user === null) {
+            navigation.navigate("Login");
+            return;
+          }
+          setUser(JSON.parse(user));
+          fetchRecipeFromFav(JSON.parse(user));
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }, [])
+  );
+
+  const fetchRecipeFromFav = (user) => {
+    fetch(`https://recipeapp-6vxr.onrender.com/user/${user._id}`)
+      .then((res) => res.json())
+      .then((response) => {
+        response.user.favoriteRecipe.map((item) => {
+          arrIdExisted.push(item.recipe._id);
+        });
+        setRecipeExisted(arrIdExisted);
+      })
+      .catch((err) => console.log(err));
+  };
 
   const scrollY = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     let { recipe } = route.params;
     setSelectedRecipe(recipe);
   }, []);
+
+  function handleFav() {
+    if (recipeExisted.includes(selectedRecipe._id)) {
+      removeFromFav();
+    } else {
+      addToFav();
+    }
+  }
+
+  function addToFav() {
+    const data = {
+      userId: user._id,
+      recipeId: selectedRecipe._id,
+    };
+
+    fetch(`https://recipeapp-6vxr.onrender.com/user/favourite`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        fetchRecipeFromFav(user);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function removeFromFav() {
+    const data = {
+      userId: user._id,
+      recipeId: selectedRecipe._id,
+    };
+    fetch(`https://recipeapp-6vxr.onrender.com/user/favourite`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        fetchRecipeFromFav(user);
+      })
+      .catch((err) => console.log(err));
+  }
 
   function renderHeaderBar() {
     return (
@@ -182,10 +262,15 @@ const Recipe = ({ navigation, route }) => {
             height: 35,
             width: 35,
           }}
+          onPress={() => {
+            handleFav();
+          }}
         >
           <Image
             source={
-              selectedRecipe?.isBookmark ? icons.bookmarkFilled : icons.bookmark
+              recipeExisted.includes(selectedRecipe?._id)
+                ? icons.bookmarkFilled
+                : icons.bookmark
             }
             style={{
               width: 30,
@@ -215,7 +300,7 @@ const Recipe = ({ navigation, route }) => {
           resizeMode="cover"
           style={{
             height: HEADER_HEIGHT,
-            width: "200%",
+            width: "150%",
             transform: [
               {
                 translateY: scrollY.interpolate({
