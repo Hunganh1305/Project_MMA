@@ -6,6 +6,7 @@ import Toast from "react-native-toast-message";
 
 import Tabs from "./navigation/tabs";
 import AddRecipe from "./screens/AddRecipe";
+import ManageRecipe from "./screens/ManageRecipe";
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ export default function App() {
           <Stack.Screen name="Starter" component={Starter} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="AddRecipe" component={AddRecipe} />
+          <Stack.Screen name="Manage" component={ManageRecipe} />
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="Home" component={Tabs} />
           <Stack.Screen name="Recipe" component={Recipe} />

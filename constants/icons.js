@@ -26,9 +26,13 @@ const sugar = require("../assets/icons/sugar.png");
 const shrimp = require("../assets/icons/shrimp.png");
 const tomato = require("../assets/icons/tomato.png");
 const plus = require("../assets/icons/plus.png");
+const check = require("../assets/icons/check.png");
+const remove = require("../assets/icons/remove.png");
 
 export default {
   bookmark,
+  check,
+  remove,
   plus,
   bookmarkFilled,
   back,

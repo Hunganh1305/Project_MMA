@@ -15,14 +15,42 @@ import { Viewers } from "../components";
 const HEADER_HEIGHT = 350;
 
 const RecipeCreatorCardDetail = ({ selectedRecipe }) => {
+  const [owner, setOwner] = useState(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetch(
+        `https://recipeapp-6vxr.onrender.com/recipe/owner/${selectedRecipe?._id}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setOwner(data.owner[0]);
+        })
+        .catch((err) => console.log(err));
+    }, [selectedRecipe])
+  );
   return (
     <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
       {/* Profile Photo */}
       <View style={{ width: 40, height: 40, marginLeft: 20 }}>
-        <Image
-          source={selectedRecipe?.author?.profilePic}
-          style={{ width: 40, height: 40, borderRadius: 20 }}
-        />
+        {owner?.img ? (
+          <Image
+            resizeMode="contain"
+            source={{
+              uri: owner.img,
+            }}
+            style={{ width: 40, height: 40, borderRadius: 20 }}
+          ></Image>
+        ) : (
+          <Image
+            resizeMode="contain"
+            source={{
+              uri: "https://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png",
+            }}
+            style={{ width: 40, height: 40, borderRadius: 20 }}
+          ></Image>
+        )}
       </View>
       {/* Labels */}
       <View style={{ flex: 1, marginHorizontal: 20 }}>
@@ -30,7 +58,7 @@ const RecipeCreatorCardDetail = ({ selectedRecipe }) => {
           Recipe by:
         </Text>
         <Text style={{ color: COLORS.white2, ...FONTS.h3 }}>
-          {selectedRecipe?.author?.name}
+          {owner?.username}
         </Text>
       </View>
       {/* Button */}
@@ -82,6 +110,7 @@ const Recipe = ({ navigation, route }) => {
   const [user, setUser] = useState(null);
   const [recipeExisted, setRecipeExisted] = useState([]);
   const arrIdExisted = [];
+
   useFocusEffect(
     useCallback(() => {
       (async () => {
@@ -225,9 +254,7 @@ const Recipe = ({ navigation, route }) => {
           <Text style={{ color: COLORS.lightGray2, ...FONTS.body4 }}>
             Recipe by:
           </Text>
-          <Text style={{ color: COLORS.white2, ...FONTS.h3 }}>
-            {selectedRecipe?.author?.name}
-          </Text>
+          <Text style={{ color: COLORS.white2, ...FONTS.h3 }}>Tu123</Text>
         </Animated.View>
 
         {/* Back Button */}

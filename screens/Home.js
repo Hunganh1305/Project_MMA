@@ -77,13 +77,14 @@ const Home = ({ navigation }) => {
       { id: 1, display: "Profile", navigate: "Profile" },
       { id: 2, display: "Favourite", navigate: "Favourite" },
       { id: 3, display: "Add recipe", navigate: "AddRecipe" },
-      { id: 4, display: "Logout", navigate: "" },
+      { id: 4, display: "Pending recipe", navigate: "PendingRecipe" },
+      { id: 5, display: "Logout", navigate: "" },
     ];
 
     const adminModal = [
       { id: 1, display: "Profile", navigate: "Profile" },
       { id: 2, display: "Favourite", navigate: "Favourite" },
-      { id: 3, display: "Mange recipe", navigate: "Manage" },
+      { id: 3, display: "Manage recipe", navigate: "Manage" },
       { id: 4, display: "Logout", navigate: "" },
     ];
 
@@ -128,6 +129,7 @@ const Home = ({ navigation }) => {
           {user &&
             (user.img ? (
               <Image
+                resizeMode="contain"
                 source={{ uri: user.img }}
                 style={{ width: 40, height: 40, borderRadius: 20 }}
               ></Image>
@@ -196,10 +198,10 @@ const Home = ({ navigation }) => {
             style={{
               position: "absolute",
               backgroundColor: COLORS.white,
-              width: 100,
-              height: 150,
+              width: 130,
+              height: 200,
               right: 0,
-              bottom: -140,
+              bottom: -190,
               elevation: Platform.OS === "android" ? 20 : 0,
               overflow: "hidden",
               flexGrow: 1,
@@ -245,7 +247,7 @@ const Home = ({ navigation }) => {
             style={{
               position: "absolute",
               backgroundColor: COLORS.white,
-              width: 120,
+              width: 130,
               height: 150,
               right: 0,
               bottom: -140,
@@ -412,6 +414,7 @@ const Home = ({ navigation }) => {
       <View
         style={{
           marginTop: SIZES.padding,
+          zIndex: -1,
         }}
       >
         <Text

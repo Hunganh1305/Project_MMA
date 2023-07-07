@@ -165,12 +165,12 @@ const AddRecipe = ({ navigation }) => {
   };
 
   return (
-    <ScrollView
-      nestedScrollEnabled={true}
-      style={{ backgroundColor: COLORS.white }}
+    <SafeAreaView
+      style={{ padding: 20, backgroundColor: COLORS.white, flex: 1 }}
     >
-      <SafeAreaView
-        style={{ padding: 20, backgroundColor: COLORS.white, flex: 1 }}
+      <ScrollView
+        nestedScrollEnabled={true}
+        style={{ backgroundColor: COLORS.white }}
       >
         <View
           style={{
@@ -509,8 +509,8 @@ const AddRecipe = ({ navigation }) => {
             <Text style={{ color: COLORS.white }}>Create</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
