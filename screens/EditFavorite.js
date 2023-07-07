@@ -67,7 +67,7 @@ const EditFavorite = ({ navigation, route }) => {
       }
       return;
     }
-    if (meal === "") {
+    if (meal.name === "") {
       showErrorToast("Please fill all the field !");
       return;
     }
@@ -174,7 +174,7 @@ const EditFavorite = ({ navigation, route }) => {
           >
             <Text style={{ fontSize: 18, fontWeight: 500 }}>Date:</Text>
             <TextInput
-              value={recipe?.date}
+              // value={recipe?.date}
               onChangeText={(date) => {
                 setDate(date);
               }}
