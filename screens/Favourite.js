@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
 
-const Favourite = ({}) => {
+const Favourite = ({ navigation }) => {
   const [recipe, setRecipe] = useState([]);
   const [user, setUser] = useState(null);
 
@@ -114,6 +114,12 @@ const Favourite = ({}) => {
                   borderRadius: SIZES.radius,
                   backgroundColor: COLORS.gray2,
                   marginHorizontal: SIZES.padding,
+                }}
+                onPress={() => {
+                  navigation.navigate("EditFavorite", {
+                    recipe: item,
+                    user: user,
+                  });
                 }}
               >
                 {/* Image */}

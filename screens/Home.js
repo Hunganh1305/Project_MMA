@@ -578,6 +578,7 @@ const Home = ({ navigation }) => {
                   marginHorizontal: SIZES.padding,
                 }}
                 categoryItem={item}
+                user={user}
                 onPress={() => navigation.navigate("Recipe", { recipe: item })}
               />
             </>

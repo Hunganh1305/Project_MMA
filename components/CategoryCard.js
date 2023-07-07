@@ -1,8 +1,75 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import React from "react";
-import { COLORS, SIZES, FONTS } from "../constants";
+import React, { useEffect, useState } from "react";
+import { COLORS, SIZES, FONTS, icons } from "../constants";
+import { useIsFocused } from "@react-navigation/native";
 
-const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
+const CategoryCard = ({ containerStyle, categoryItem, onPress, user }) => {
+  const [recipeExisted, setRecipeExisted] = useState([]);
+  const isFocused = useIsFocused();
+
+  const arrIdExisted = [];
+  const fetchRecipeFromFav = () => {
+    fetch(`https://recipeapp-6vxr.onrender.com/user/${user._id}`)
+      .then((res) => res.json())
+      .then((response) => {
+        response.user.favoriteRecipe.map((item) => {
+          arrIdExisted.push(item.recipe._id);
+        });
+        setRecipeExisted(arrIdExisted);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    fetchRecipeFromFav();
+  }, [isFocused]);
+
+  function handleFav() {
+    if (recipeExisted.includes(categoryItem._id)) {
+      removeFromFav();
+    } else {
+      addToFav();
+    }
+  }
+
+  function addToFav() {
+    const data = {
+      userId: user._id,
+      recipeId: categoryItem._id,
+    };
+
+    fetch(`https://recipeapp-6vxr.onrender.com/user/favourite`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        fetchRecipeFromFav();
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function removeFromFav() {
+    const data = {
+      userId: user._id,
+      recipeId: categoryItem._id,
+    };
+    fetch(`https://recipeapp-6vxr.onrender.com/user/favourite`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        fetchRecipeFromFav();
+      })
+      .catch((err) => console.log(err));
+  }
+
   return (
     <TouchableOpacity
       style={{
@@ -30,16 +97,47 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
           paddingHorizontal: 20,
         }}
       >
-        {/* Name */}
-        <Text
+        {/* Name & Bookmark */}
+        <View
           style={{
             flex: 1,
-            fontWeight: "bold",
-            ...FONTS.h2,
+            flexDirection: "row",
+            justifyContent: "space-between",
           }}
         >
-          {categoryItem.name}
-        </Text>
+          <Text
+            style={{
+              width: "70%",
+              fontWeight: "bold",
+              ...FONTS.h3,
+              fontSize: 18,
+            }}
+          >
+            {categoryItem.name}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              handleFav();
+            }}
+          >
+            <Image
+              source={
+                recipeExisted.includes(categoryItem._id)
+                  ? icons.bookmarkFilled
+                  : icons.bookmark
+              }
+              style={{
+                top: -10,
+                right: -50,
+                width: 20,
+                height: 20,
+                marginRight: SIZES.base,
+                tintColor: COLORS.darkGreen,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+
         {/* Servings */}
         <Text
           style={{
