@@ -76,8 +76,8 @@ const Home = ({ navigation }) => {
     const cookerModal = [
       { id: 1, display: "Profile", navigate: "Profile" },
       { id: 2, display: "Favourite", navigate: "Favourite" },
-      { id: 3, display: "Add recipe", navigate: "AddRecipe" },
-      { id: 4, display: "Pending recipe", navigate: "PendingRecipe" },
+      { id: 3, display: "Create recipe", navigate: "AddRecipe" },
+      { id: 4, display: "Your recipe", navigate: "CreatedRecipe" },
       { id: 5, display: "Logout", navigate: "" },
     ];
 
@@ -198,7 +198,7 @@ const Home = ({ navigation }) => {
             style={{
               position: "absolute",
               backgroundColor: COLORS.white,
-              width: 130,
+              width: 120,
               height: 200,
               right: 0,
               bottom: -190,
