@@ -437,7 +437,7 @@ const Recipe = ({ navigation, route }) => {
     >
       <Animated.FlatList
         data={selectedRecipe?.ingredients}
-        keyExtractor={(item) => `${item.id}`}
+        keyExtractor={(item) => `${item._id}`}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View>

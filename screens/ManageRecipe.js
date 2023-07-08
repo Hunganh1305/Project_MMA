@@ -5,11 +5,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES, icons } from "../constants";
 import { useFocusEffect } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ManageRecipe = ({ navigation }) => {
   const [userWithPendingRecipes, setUserWithPendingRecipes] = useState([]);
   const [userId, setUserId] = useState(null);
+
+  const showSuccessToast = (text) => {
+    Toast.show({
+      type: "success",
+      text1: text,
+      visibilityTime: 3000,
+    });
+  };
 
   const changeRecipeStatus = (recipeId, status) => {
     fetch("https://recipeapp-6vxr.onrender.com/recipe/status", {
@@ -27,6 +36,11 @@ const ManageRecipe = ({ navigation }) => {
             .then((res) => res.json())
             .then((data) => {
               setUserWithPendingRecipes(data);
+              if (status === "accepted") {
+                showSuccessToast("Recipe accepted !");
+              } else {
+                showSuccessToast("Recipe denied !");
+              }
             })
             .catch((err) => console.log(err));
         }
@@ -104,7 +118,7 @@ const ManageRecipe = ({ navigation }) => {
         {userWithPendingRecipes.length > 0 ? (
           <View style={{ flex: 1, alignItems: "flex-start", marginTop: 25 }}>
             {userWithPendingRecipes.map((item) => (
-              <>
+              <View key={item._id}>
                 <Text style={{ fontSize: 24, fontWeight: 700 }}>
                   Owner: {item.username}
                 </Text>
@@ -236,7 +250,7 @@ const ManageRecipe = ({ navigation }) => {
                     </View>
                   </TouchableOpacity>
                 ))}
-              </>
+              </View>
             ))}
           </View>
         ) : (

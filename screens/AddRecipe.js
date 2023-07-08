@@ -92,7 +92,7 @@ const AddRecipe = ({ navigation }) => {
     Toast.show({
       type: "success",
       text1: "Successfully created !",
-      text2: "View your pending recipes",
+      text2: "View your recipes",
       visibilityTime: 3000,
     });
   };

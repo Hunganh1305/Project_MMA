@@ -10,6 +10,10 @@ import {
 } from "react-native";
 import { COLORS, SIZES, FONTS, icons } from "../constants";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
+import { auth, db, storage } from "../firebase/firebase.config";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const EditProfile = ({ navigation, route }) => {
   let { user } = route.params;
@@ -17,6 +21,7 @@ const EditProfile = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [picture, setPicture] = useState("");
 
   const showErrorToast = (error1) => {
     Toast.show({
@@ -38,13 +43,40 @@ const EditProfile = ({ navigation, route }) => {
     console.log("upload img");
   }
 
-  function handleSave() {
-    const data = {
-      username: name ? name : user?.username,
-      email: email ? email : user?.email,
-      phone: phone ? phone : user?.phone,
-      address: address ? address : user?.address,
-    };
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      maxWidth: 900,
+      maxHeight: 900,
+    });
+
+    if (!result.canceled) {
+      setPicture(result.assets[0].uri);
+    }
+  };
+
+  const handleSave = async () => {
+    let data;
+    if (picture) {
+      const url = await uploadImage();
+      data = {
+        username: name ? name : user?.username,
+        email: email ? email : user?.email,
+        phone: phone ? phone : user?.phone,
+        address: address ? address : user?.address,
+        img: picture,
+      };
+    } else {
+      data = {
+        username: name ? name : user?.username,
+        email: email ? email : user?.email,
+        phone: phone ? phone : user?.phone,
+        address: address ? address : user?.address,
+      };
+    }
 
     if (
       data.username === "" ||
@@ -66,10 +98,42 @@ const EditProfile = ({ navigation, route }) => {
       .then((res) => res.json())
       .then((response) => {
         console.log(response);
-        showSuccessToast();
+        (async () => {
+          try {
+            await AsyncStorage.setItem("user", JSON.stringify(response));
+            showSuccessToast();
+          } catch (error) {
+            console.log(error);
+          }
+        })();
       })
       .catch((err) => console.log(err));
-  }
+  };
+
+  const uploadImage = async () => {
+    //convert image to blob image
+    const blobImage = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", picture, true);
+      xhr.send(null);
+    });
+    try {
+      const storageRef = ref(storage, `userImages/image-${Date.now()}`);
+      const result = await uploadBytes(storageRef, blobImage);
+
+      blobImage.close();
+      return await getDownloadURL(storageRef);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -121,14 +185,26 @@ const EditProfile = ({ navigation, route }) => {
           marginHorizontal: SIZES.padding,
         }}
       >
-        {user &&
-          (user.img ? (
-            <Image
-              resizeMode="cover"
-              source={{ uri: user?.img }}
-              style={{ width: 200, height: 200, borderRadius: SIZES.radius }}
-            ></Image>
+        {user?.img ? (
+          !picture ? (
+            <TouchableOpacity onPress={pickImage}>
+              <Image
+                resizeMode="cover"
+                source={{ uri: user?.img }}
+                style={{ width: 200, height: 200, borderRadius: SIZES.radius }}
+              ></Image>
+            </TouchableOpacity>
           ) : (
+            <TouchableOpacity onPress={pickImage}>
+              <Image
+                resizeMode="cover"
+                source={{ uri: picture }}
+                style={{ width: 200, height: 200, borderRadius: SIZES.radius }}
+              ></Image>
+            </TouchableOpacity>
+          )
+        ) : !picture ? (
+          <TouchableOpacity onPress={pickImage}>
             <Image
               resizeMode="cover"
               source={{
@@ -136,7 +212,18 @@ const EditProfile = ({ navigation, route }) => {
               }}
               style={{ width: 200, height: 200, borderRadius: SIZES.radius }}
             ></Image>
-          ))}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={pickImage}>
+            <Image
+              resizeMode="cover"
+              source={{
+                uri: picture,
+              }}
+              style={{ width: 200, height: 200, borderRadius: SIZES.radius }}
+            ></Image>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => {
             uploadImg();
@@ -159,6 +246,8 @@ const EditProfile = ({ navigation, route }) => {
           style={{
             marginTop: 10,
             flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Text
@@ -174,7 +263,7 @@ const EditProfile = ({ navigation, route }) => {
               setName(data);
             }}
             style={{
-              width: "60%",
+              width: "55%",
               height: 30,
               borderRadius: 100,
               paddingHorizontal: 10,
@@ -191,6 +280,8 @@ const EditProfile = ({ navigation, route }) => {
           style={{
             marginTop: 10,
             flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Text
@@ -206,7 +297,7 @@ const EditProfile = ({ navigation, route }) => {
               setEmail(data);
             }}
             style={{
-              width: "60%",
+              width: "55%",
               height: 30,
               borderRadius: 100,
               paddingHorizontal: 10,
@@ -222,6 +313,8 @@ const EditProfile = ({ navigation, route }) => {
           style={{
             marginTop: 10,
             flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Text
@@ -237,7 +330,7 @@ const EditProfile = ({ navigation, route }) => {
               setPhone(data);
             }}
             style={{
-              width: "60%",
+              width: "55%",
               height: 30,
               borderRadius: 100,
               paddingHorizontal: 10,
@@ -253,6 +346,8 @@ const EditProfile = ({ navigation, route }) => {
           style={{
             marginTop: 10,
             flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Text
@@ -292,9 +387,7 @@ const EditProfile = ({ navigation, route }) => {
           width: 120,
           borderRadius: 100,
         }}
-        onPress={() => {
-          handleSave();
-        }}
+        onPress={handleSave}
       >
         <Text
           style={{
