@@ -1,5 +1,12 @@
 import React from "react";
-import { Starter, Recipe, Login, Signup, Favourite } from "./screens";
+import {
+  Starter,
+  Recipe,
+  Login,
+  Signup,
+  Profile,
+  EditProfile,
+} from "./screens";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -29,6 +36,8 @@ export default function App() {
           <Stack.Screen name="Home" component={Tabs} />
           <Stack.Screen name="Recipe" component={Recipe} />
           <Stack.Screen name="EditFavorite" component={EditFavorite} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />

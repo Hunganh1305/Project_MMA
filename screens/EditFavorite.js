@@ -174,7 +174,7 @@ const EditFavorite = ({ navigation, route }) => {
           >
             <Text style={{ fontSize: 18, fontWeight: 500 }}>Date:</Text>
             <TextInput
-              // value={recipe?.date}
+              defaultValue={recipe?.date}
               onChangeText={(date) => {
                 setDate(date);
               }}
