@@ -441,7 +441,10 @@ const Home = ({ navigation }) => {
                   marginLeft: index === 0 ? SIZES.padding : 0,
                 }}
                 onPress={() => {
-                  navigation.navigate("Recipe", { recipe: item });
+                  navigation.navigate("Recipe", {
+                    recipe: item,
+                    editable: true,
+                  });
                 }}
               />
             );
@@ -579,7 +582,12 @@ const Home = ({ navigation }) => {
                 }}
                 categoryItem={item}
                 user={user}
-                onPress={() => navigation.navigate("Recipe", { recipe: item })}
+                onPress={() =>
+                  navigation.navigate("Recipe", {
+                    recipe: item,
+                    editable: true,
+                  })
+                }
               />
             </>
           );

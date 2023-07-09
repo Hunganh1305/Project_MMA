@@ -15,6 +15,7 @@ import Tabs from "./navigation/tabs";
 import AddRecipe from "./screens/AddRecipe";
 import ManageRecipe from "./screens/ManageRecipe";
 import EditFavorite from "./screens/EditFavorite";
+import CreatedRecipe from "./screens/CreatedRecipe";
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ export default function App() {
           <Stack.Screen name="EditFavorite" component={EditFavorite} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="CreatedRecipe" component={CreatedRecipe} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />

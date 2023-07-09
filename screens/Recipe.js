@@ -110,6 +110,7 @@ const Recipe = ({ navigation, route }) => {
   const [user, setUser] = useState(null);
   const [recipeExisted, setRecipeExisted] = useState([]);
   const arrIdExisted = [];
+  const [editable, setEditable] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -143,8 +144,9 @@ const Recipe = ({ navigation, route }) => {
 
   const scrollY = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    let { recipe } = route.params;
+    let { recipe, editable } = route.params;
     setSelectedRecipe(recipe);
+    setEditable(editable);
   }, []);
 
   function handleFav() {
@@ -282,30 +284,32 @@ const Recipe = ({ navigation, route }) => {
         </TouchableOpacity>
         {/* Bookmark */}
 
-        <TouchableOpacity
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: 35,
-            width: 35,
-          }}
-          onPress={() => {
-            handleFav();
-          }}
-        >
-          <Image
-            source={
-              recipeExisted.includes(selectedRecipe?._id)
-                ? icons.bookmarkFilled
-                : icons.bookmark
-            }
+        {editable && (
+          <TouchableOpacity
             style={{
-              width: 30,
-              height: 30,
-              tintColor: COLORS.darkGreen,
+              alignItems: "center",
+              justifyContent: "center",
+              height: 35,
+              width: 35,
             }}
-          />
-        </TouchableOpacity>
+            onPress={() => {
+              handleFav();
+            }}
+          >
+            <Image
+              source={
+                recipeExisted.includes(selectedRecipe?._id)
+                  ? icons.bookmarkFilled
+                  : icons.bookmark
+              }
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: COLORS.darkGreen,
+              }}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     );
   }

@@ -30,7 +30,6 @@ const ManageRecipe = ({ navigation }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.success) {
           fetch("https://recipeapp-6vxr.onrender.com/recipe/pending")
             .then((res) => res.json())
@@ -125,6 +124,19 @@ const ManageRecipe = ({ navigation }) => {
 
                 {item.createdRecipe.map((recipe) => (
                   <TouchableOpacity
+                    onPress={() => {
+                      fetch(
+                        `https://recipeapp-6vxr.onrender.com/recipe/${recipe._id}`
+                      )
+                        .then((res) => res.json())
+                        .then((data) => {
+                          navigation.navigate("Recipe", {
+                            recipe: data[0],
+                            editable: false,
+                          });
+                        })
+                        .catch((err) => console.log(err));
+                    }}
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
