@@ -3,13 +3,18 @@ import React, { useEffect, useState } from "react";
 import { COLORS, SIZES, FONTS, icons } from "../constants";
 import { useIsFocused } from "@react-navigation/native";
 
-const CategoryCard = ({ containerStyle, categoryItem, onPress, user }) => {
-  const [recipeExisted, setRecipeExisted] = useState([]);
+const CategoryCard = ({
+  containerStyle,
+  categoryItem,
+  onPress,
+  user,
+  recipeExisted,
+  setRecipeExisted,
+}) => {
   const isFocused = useIsFocused();
-
   const arrIdExisted = [];
   const fetchRecipeFromFav = () => {
-    fetch(`https://recipeapp-6vxr.onrender.com/user/${user._id}`)
+    fetch(`https://recipeapp-6vxr.onrender.com/user/${user?._id}`)
       .then((res) => res.json())
       .then((response) => {
         response.user.favoriteRecipe.map((item) => {
@@ -25,7 +30,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress, user }) => {
   }, [isFocused]);
 
   function handleFav() {
-    if (recipeExisted.includes(categoryItem._id)) {
+    if (recipeExisted?.includes(categoryItem._id)) {
       removeFromFav();
     } else {
       addToFav();
@@ -122,7 +127,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress, user }) => {
           >
             <Image
               source={
-                recipeExisted.includes(categoryItem._id)
+                recipeExisted?.includes(categoryItem._id)
                   ? icons.bookmarkFilled
                   : icons.bookmark
               }

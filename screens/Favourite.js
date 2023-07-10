@@ -116,10 +116,18 @@ const Favourite = ({ navigation }) => {
                   marginHorizontal: SIZES.padding,
                 }}
                 onPress={() => {
-                  navigation.navigate("EditFavorite", {
-                    recipe: item,
-                    user: user,
-                  });
+                  fetch(
+                    `https://recipeapp-6vxr.onrender.com/recipe/${item.recipe._id}`
+                  )
+                    .then((res) => res.json())
+                    .then((data) => {
+                      console.log(data);
+                      navigation.navigate("Recipe", {
+                        recipe: data[0],
+                        editable: false,
+                      });
+                    })
+                    .catch((err) => console.log(err));
                 }}
               >
                 {/* Image */}
@@ -172,6 +180,21 @@ const Favourite = ({ navigation }) => {
                   top: -100,
                 }}
                 name="delete"
+                size={24}
+                color="black"
+              />
+              <AntDesign
+                onPress={() => {
+                  navigation.navigate("EditFavorite", {
+                    recipe: item,
+                    user: user,
+                  });
+                }}
+                style={{
+                  right: -350,
+                  top: -60,
+                }}
+                name="edit"
                 size={24}
                 color="black"
               />

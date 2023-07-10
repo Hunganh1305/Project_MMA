@@ -11,13 +11,16 @@ import { SIZES, FONTS, COLORS, icons } from "../constants";
 import { useIsFocused } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 
-const RecipeCardDetails = ({ recipeItem, user }) => {
-  const [recipeExisted, setRecipeExisted] = useState([]);
+const RecipeCardDetails = ({
+  recipeItem,
+  user,
+  recipeExisted,
+  setRecipeExisted,
+}) => {
   const isFocused = useIsFocused();
-
   const arrIdExisted = [];
   const fetchRecipeFromFav = () => {
-    fetch(`https://recipeapp-6vxr.onrender.com/user/${user._id}`)
+    fetch(`https://recipeapp-6vxr.onrender.com/user/${user?._id}`)
       .then((res) => res.json())
       .then((response) => {
         response.user.favoriteRecipe.map((item) => {
@@ -33,7 +36,7 @@ const RecipeCardDetails = ({ recipeItem, user }) => {
   }, [isFocused]);
 
   function handleFav() {
-    if (recipeExisted.includes(recipeItem._id)) {
+    if (recipeExisted?.includes(recipeItem._id)) {
       removeFromFav();
     } else {
       addToFav();
@@ -103,14 +106,10 @@ const RecipeCardDetails = ({ recipeItem, user }) => {
         >
           {recipeItem.name}
         </Text>
-        <TouchableOpacity
-          onPress={() => {
-            handleFav();
-          }}
-        >
+        <TouchableOpacity onPress={handleFav}>
           <Image
             source={
-              recipeExisted.includes(recipeItem._id)
+              recipeExisted?.includes(recipeItem._id)
                 ? icons.bookmarkFilled
                 : icons.bookmark
             }
@@ -137,11 +136,21 @@ const RecipeCardDetails = ({ recipeItem, user }) => {
   );
 };
 
-const RecipeCardInfo = ({ recipeItem, user }) => {
+const RecipeCardInfo = ({
+  recipeItem,
+  user,
+  recipeExisted,
+  setRecipeExisted,
+}) => {
   if (Platform.OS === "ios") {
     return (
       <BlurView tint="dark" style={styles.recipeCardContainer}>
-        <RecipeCardDetails recipeItem={recipeItem} user={user} />
+        <RecipeCardDetails
+          recipeItem={recipeItem}
+          user={user}
+          recipeExisted={recipeExisted}
+          setRecipeExisted={setRecipeExisted}
+        />
       </BlurView>
     );
   } else {
@@ -152,13 +161,25 @@ const RecipeCardInfo = ({ recipeItem, user }) => {
           backgroundColor: COLORS.transparentDarkGray,
         }}
       >
-        <RecipeCardDetails recipeItem={recipeItem} user={user} />
+        <RecipeCardDetails
+          recipeItem={recipeItem}
+          user={user}
+          recipeExisted={recipeExisted}
+          setRecipeExisted={setRecipeExisted}
+        />
       </View>
     );
   }
 };
 
-const TrendingCard = ({ containerStyle, recipeItem, onPress, user }) => {
+const TrendingCard = ({
+  containerStyle,
+  recipeItem,
+  onPress,
+  user,
+  setRecipeExisted,
+  recipeExisted,
+}) => {
   return (
     <TouchableOpacity
       style={{
@@ -206,7 +227,12 @@ const TrendingCard = ({ containerStyle, recipeItem, onPress, user }) => {
       </View>
 
       {/* Card info */}
-      <RecipeCardInfo recipeItem={recipeItem} user={user} />
+      <RecipeCardInfo
+        recipeItem={recipeItem}
+        user={user}
+        recipeExisted={recipeExisted}
+        setRecipeExisted={setRecipeExisted}
+      />
     </TouchableOpacity>
   );
 };

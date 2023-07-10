@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -25,6 +25,17 @@ const EditFavorite = ({ navigation, route }) => {
     /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(202[3-5]|2[3-9][0-9]\d+)$/;
   const [date, setDate] = useState("");
   const [meal, setMeal] = useState({ id: null, name: "" });
+
+  useEffect(() => {
+    if (date === "") {
+      setDate(recipe.date);
+    }
+    mealOptions.map((item) => {
+      if (item.name == recipe.meal) {
+        setMeal({ id: item.id, name: item.name });
+      }
+    });
+  }, []);
 
   const renderItem = (item) => {
     return (

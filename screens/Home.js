@@ -21,6 +21,7 @@ const Home = ({ navigation }) => {
   const [totalPage, setTotalPage] = useState(1);
   const [result, setResult] = useState([]);
   const [cateList, setCateList] = useState([]);
+  const [recipeExisted, setRecipeExisted] = useState([]);
 
   const [user, setUser] = useState(null);
 
@@ -435,6 +436,8 @@ const Home = ({ navigation }) => {
           renderItem={({ item, index }) => {
             return (
               <TrendingCard
+                recipeExisted={recipeExisted}
+                setRecipeExisted={setRecipeExisted}
                 user={user}
                 recipeItem={item}
                 containerStyle={{
@@ -577,6 +580,8 @@ const Home = ({ navigation }) => {
           return (
             <>
               <CategoryCard
+                recipeExisted={recipeExisted}
+                setRecipeExisted={setRecipeExisted}
                 containerStyle={{
                   marginHorizontal: SIZES.padding,
                 }}

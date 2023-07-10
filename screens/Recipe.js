@@ -109,9 +109,11 @@ const Recipe = ({ navigation, route }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [user, setUser] = useState(null);
   const [recipeExisted, setRecipeExisted] = useState([]);
+  const [ingredientImg, setIngredientImg] = useState("");
   const arrIdExisted = [];
   const [editable, setEditable] = useState(false);
 
+  const recipeId = route.params.recipe._id;
   useFocusEffect(
     useCallback(() => {
       (async () => {
@@ -129,6 +131,15 @@ const Recipe = ({ navigation, route }) => {
       })();
     }, [])
   );
+
+  useEffect(() => {
+    fetch(`https://recipeapp-6vxr.onrender.com/recipe/${recipeId}`)
+      .then((res) => res.json())
+      .then((response) => {
+        console.log("response name", response[0].img);
+        setIngredientImg(response[0].img);
+      });
+  }, []);
 
   const fetchRecipeFromFav = (user) => {
     fetch(`https://recipeapp-6vxr.onrender.com/user/${user._id}`)
@@ -327,7 +338,9 @@ const Recipe = ({ navigation, route }) => {
         {/* Background Image */}
 
         <Animated.Image
-          source={{ uri: selectedRecipe?.img }}
+          source={{
+            uri: selectedRecipe?.img ? selectedRecipe?.img : ingredientImg,
+          }}
           resizeMode="cover"
           style={{
             height: HEADER_HEIGHT,
@@ -426,12 +439,11 @@ const Recipe = ({ navigation, route }) => {
             ...FONTS.body4,
           }}
         >
-          {selectedRecipe?.ingredients.length} items
+          {selectedRecipe?.ingredients?.length} items
         </Text>
       </View>
     );
   }
-
   return (
     <View
       style={{
@@ -478,7 +490,7 @@ const Recipe = ({ navigation, route }) => {
               }}
             >
               <Image
-                source={{ uri: item.ingredient.img }}
+                source={{ uri: item?.ingredient?.img }}
                 style={{
                   height: 40,
                   width: 40,
