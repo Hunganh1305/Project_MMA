@@ -39,9 +39,29 @@ const EditProfile = ({ navigation, route }) => {
     });
   };
 
-  function uploadImg() {
-    console.log("upload img");
-  }
+  const uploadImg = async () => {
+    const blobImage = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", picture, true);
+      xhr.send(null);
+    });
+    try {
+      const storageRef = ref(storage, `userImages/image-${Date.now()}`);
+      const result = await uploadBytes(storageRef, blobImage);
+
+      blobImage.close();
+      return await getDownloadURL(storageRef);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -67,7 +87,7 @@ const EditProfile = ({ navigation, route }) => {
         email: email ? email : user?.email,
         phone: phone ? phone : user?.phone,
         address: address ? address : user?.address,
-        img: picture,
+        img: url,
       };
     } else {
       data = {
