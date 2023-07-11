@@ -16,6 +16,7 @@ const HEADER_HEIGHT = 350;
 
 const RecipeCreatorCardDetail = ({ selectedRecipe }) => {
   const [owner, setOwner] = useState(null);
+  console.log(owner);
 
   useFocusEffect(
     useCallback(() => {
