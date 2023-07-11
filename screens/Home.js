@@ -13,6 +13,12 @@ import { CategoryCard, TrendingCard } from "../components";
 import { useFocusEffect } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+
+  signInWithCredential,
+  signOut
+} from "firebase/auth";
+import { auth } from "../firebase/firebase.config";
 
 const Home = ({ navigation }) => {
   const [search, setSearch] = useState("");
@@ -166,12 +172,14 @@ const Home = ({ navigation }) => {
                 return (
                   <TouchableOpacity
                     style={{ marginHorizontal: 10, marginVertical: 8 }}
-                    onPress={() => {
+                    onPress={async() => {
                       if (item.display === "Logout") {
+        
                         (async () => {
                           try {
                             await AsyncStorage.removeItem("user");
                             navigation.navigate("Login");
+
                             return;
                           } catch (error) {
                             console.log(error);
