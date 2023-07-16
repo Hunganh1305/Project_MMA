@@ -14,90 +14,8 @@ import Field from "../components/Field";
 import Button from "../components/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import { AntDesign } from "@expo/vector-icons";
-
-import * as Google from "expo-auth-session/providers/google";
-import * as WebBrowser from "expo-web-browser";
-import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithCredential
-} from "firebase/auth";
-import { auth } from "../firebase/firebase.config";
-
-WebBrowser.maybeCompleteAuthSession();
 
 const Login = (props) => {
-
-  const [user, setUser] = useState(null)
-  // const [userInfo, setUserInfo] = useState({
-  //   username: "",
-  //   email: "",
-  //   phone: "",
-  //   img: "",
-  // });
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId:
-      "200249068393-f6smhn4nkjargdlltmm1cmbig0fvgopm.apps.googleusercontent.com",
-    androidClientId:
-      "200249068393-aqm94tt70pkcod6ovlb07flnuc8dhf82.apps.googleusercontent.com",
-  });
-
-  useEffect(() => {
-    if (response?.type == "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      const user = signInWithCredential(auth, credential);
-      setUser(credential)
-
-    }
-  }, [response]);
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      
-      if (user) {
-        const userInfo = {
-          username: user.displayName,
-          email: user.email,
-          img: user.photoURL,
-        };
-        loginWithGoogle(userInfo);
-      } else {
-        console.log("else");
-      }
-    });
-    return () => unsub();
-  }, [user]);
-  const loginWithGoogle = (userInfo) => {
-    console.log(userInfo);
-    fetch("https://recipeapp-6vxr.onrender.com/auth/loginWithGoogle", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userInfo),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success === false) {
-          Alert.alert("OOPS !", data.message);
-          return;
-        }
-        (async () => {
-          try {
-            await AsyncStorage.setItem("user", JSON.stringify(data.userInfo));
-          } catch (error) {
-            console.log(error);
-          }
-        })();
-        props.navigation.navigate("Home");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  // console.log(props);
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
   // const [error, setError] = useState("");
@@ -345,26 +263,6 @@ const Login = (props) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#4285f4",
-              width: "75%",
-              padding: 10,
-              borderRadius: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 15,
-              marginTop: 80,
-              marginBottom: 150,
-            }}
-            onPress={() => promptAsync()}
-          >
-            <AntDesign name="google" size={30} color="white"></AntDesign>
-            <Text style={{ fontWeight: "bold", color: "white", fontSize: 17 }}>
-              Sign In With Google
-            </Text>
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </Background>

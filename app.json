@@ -15,24 +15,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.phhgquang.Cookingrecipe"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.phhgquang.Cookingrecipe"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "31f962b0-7a66-4ad4-b9d1-7a32acea6623"
-      }
-    },
-    "scheme":"Cooking-recipe"
+    }
   }
 }

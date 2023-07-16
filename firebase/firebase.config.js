@@ -25,7 +25,3 @@ const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-
-
-// IOS: 200249068393-f6smhn4nkjargdlltmm1cmbig0fvgopm.apps.googleusercontent.com
-// Android: 200249068393-aqm94tt70pkcod6ovlb07flnuc8dhf82.apps.googleusercontent.com
