@@ -12,19 +12,10 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const data = [
-  { label: "Item 1", value: "1" },
-  { label: "Item 2", value: "2" },
-  { label: "Item 3", value: "3" },
-  { label: "Item 4", value: "4" },
-  { label: "Item 5", value: "5" },
-  { label: "Item 6", value: "6" },
-  { label: "Item 7", value: "7" },
-  { label: "Item 8", value: "8" },
-];
-
-const AddRecipe = ({ navigation }) => {
+const AddRecipe = ({ navigation, route }) => {
+  const params = route.params;
   const [listIngredient, setListIngredient] = useState([]);
+  const [listCategory, setListCategory] = useState([]);
 
   const [userId, setUserId] = useState(null);
 
@@ -37,6 +28,7 @@ const AddRecipe = ({ navigation }) => {
   const [name, setName] = useState("");
   const [servingSize, setServingSize] = useState(null);
   const [servingTime, setServingTime] = useState(null);
+  const [category, setCategory] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -54,6 +46,16 @@ const AddRecipe = ({ navigation }) => {
       })();
     }, [])
   );
+
+  useEffect(() => {
+    if (params) {
+      setName(params?.recipe?.name);
+      setServingSize(params?.recipe?.servingSize);
+      setServingTime(params?.recipe?.servingTime);
+      setCategory(params?.recipe?.category);
+      setRecipeIngredients(params?.recipe?.ingredients);
+    }
+  }, []);
 
   const uploadImage = async () => {
     //convert image to blob image
@@ -88,12 +90,15 @@ const AddRecipe = ({ navigation }) => {
     });
   };
 
-  const showSuccessToast = () => {
+  const showSuccessToast = (text) => {
     Toast.show({
       type: "success",
-      text1: "Successfully created !",
+      text1: `Successfully ${text} !`,
       text2: "View your recipes",
       visibilityTime: 3000,
+      onPress: () => {
+        navigation.navigate("CreatedRecipe");
+      },
     });
   };
 
@@ -113,23 +118,35 @@ const AddRecipe = ({ navigation }) => {
   };
 
   const validate = () => {
-    if (!name || !servingSize || !servingTime) {
+    if (!name || !servingSize || !servingTime || !category) {
       showErrorToast("Please fill all the field !");
-      return;
+      return false;
+    }
+
+    if (isNaN(servingSize)) {
+      showErrorToast("Serving size must be number");
+      return false;
+    }
+
+    if (isNaN(servingTime)) {
+      showErrorToast("Serving time must be number");
+      return false;
     }
 
     if (checkNullIngredients()) {
       showErrorToast("Please fill all the field !");
-      return;
+      return false;
     }
     if (isDuplicateIngredient(recipeIngredients)) {
       showErrorToast("Ingredient cannot be duplicated !");
-      return;
+      return false;
     }
-    if (!picture) {
+    if (!picture && !params) {
       showErrorToast("Please upload recipe image !");
-      return;
+      return false;
     }
+
+    return true;
   };
 
   useEffect(() => {
@@ -137,6 +154,12 @@ const AddRecipe = ({ navigation }) => {
       .then((res) => res.json())
       .then((data) => {
         setListIngredient(data);
+      })
+      .catch((err) => console.log(err));
+    fetch("https://recipeapp-6vxr.onrender.com/category")
+      .then((res) => res.json())
+      .then((data) => {
+        setListCategory(data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -234,7 +257,21 @@ const AddRecipe = ({ navigation }) => {
               justifyContent: "center",
             }}
           >
-            {picture ? (
+            {params ? (
+              !picture ? (
+                <Image
+                  style={{ width: "100%", height: "100%" }}
+                  resizeMode="cover"
+                  source={{ uri: params?.recipe?.img }}
+                />
+              ) : (
+                <Image
+                  style={{ width: "100%", height: "100%" }}
+                  resizeMode="cover"
+                  source={{ uri: picture }}
+                />
+              )
+            ) : picture ? (
               <Image
                 style={{ width: "100%", height: "100%" }}
                 resizeMode="cover"
@@ -260,6 +297,7 @@ const AddRecipe = ({ navigation }) => {
           <Text style={{ fontSize: 20, fontWeight: 500 }}>Recipe name:</Text>
           <TextInput
             onChangeText={(name) => setName(name)}
+            value={name}
             style={{
               borderRadius: 100,
               color: COLORS.black,
@@ -283,9 +321,8 @@ const AddRecipe = ({ navigation }) => {
         >
           <Text style={{ fontSize: 20, fontWeight: 500 }}>Serving time:</Text>
           <TextInput
-            keyboardType="numeric"
+            value={servingTime && servingTime + ""}
             onChangeText={(time) => setServingTime(time)}
-            inputMode="numeric"
             style={{
               borderRadius: 100,
               color: COLORS.black,
@@ -309,8 +346,7 @@ const AddRecipe = ({ navigation }) => {
         >
           <Text style={{ fontSize: 20, fontWeight: 500 }}>Serving size:</Text>
           <TextInput
-            keyboardType="numeric"
-            inputMode="numeric"
+            value={servingSize && servingSize + ""}
             onChangeText={(size) => setServingSize(size)}
             style={{
               borderRadius: 100,
@@ -322,6 +358,38 @@ const AddRecipe = ({ navigation }) => {
               marginVertical: 9,
             }}
             placeholder="Serving size"
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 10,
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={{ fontSize: 20, fontWeight: 500 }}>Category:</Text>
+          <Dropdown
+            style={styles.dropdown}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={listCategory}
+            maxHeight={300}
+            labelField="name"
+            valueField="_id"
+            placeholder="Select category"
+            searchPlaceholder="Search..."
+            search
+            value={category}
+            autoScroll={false}
+            showsVerticalScrollIndicator={true}
+            onChange={(data) => {
+              setCategory(data._id);
+            }}
+            renderItem={renderItem}
           />
         </View>
         {recipeIngredients.map((item, index) => (
@@ -396,6 +464,7 @@ const AddRecipe = ({ navigation }) => {
                     backgroundColor: COLORS.lightGray,
                     marginVertical: 9,
                   }}
+                  value={item.amount}
                   onChangeText={(data) => {
                     const newIngredients = recipeIngredients.map((item, i) => {
                       if (i === index) {
@@ -463,52 +532,123 @@ const AddRecipe = ({ navigation }) => {
             }}
           />
         </TouchableOpacity>
-        <View
-          style={{
-            marginTop: 20,
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <TouchableOpacity
+        {params ? (
+          <View
             style={{
+              marginTop: 20,
+              flex: 1,
               alignItems: "center",
               justifyContent: "center",
-              height: 35,
-              width: 120,
-
-              borderWidth: 1,
-              borderColor: COLORS.lightGray,
-              backgroundColor: COLORS.black,
-            }}
-            onPress={async () => {
-              validate();
-              const url = await uploadImage();
-              const data = {
-                name: name,
-                servingSize: servingSize,
-                servingTime: servingTime,
-                img: url,
-                ingredients: recipeIngredients,
-              };
-              fetch(`https://recipeapp-6vxr.onrender.com/recipe/${userId}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  showSuccessToast();
-                })
-                .catch((err) => console.log(err));
             }}
           >
-            <Text style={{ color: COLORS.white }}>Create</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 35,
+                width: 120,
+
+                borderWidth: 1,
+                borderColor: COLORS.lightGray,
+                backgroundColor: COLORS.black,
+              }}
+              onPress={async () => {
+                if (validate()) {
+                  let data;
+                  if (picture) {
+                    const url = await uploadImage();
+                    data = {
+                      name: name,
+                      servingSize: servingSize,
+                      servingTime: servingTime,
+                      img: url,
+                      category: category,
+                      ingredients: recipeIngredients,
+                    };
+                  } else {
+                    data = {
+                      name: name,
+                      servingSize: servingSize,
+                      servingTime: servingTime,
+                      category: category,
+                      ingredients: recipeIngredients,
+                    };
+                  }
+                  fetch(
+                    `https://recipeapp-6vxr.onrender.com/recipe/${params.recipe._id}`,
+                    {
+                      method: "Put",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(data),
+                    }
+                  )
+                    .then((res) => res.json())
+                    .then((data) => {
+                      console.log(data);
+                      showSuccessToast("edited");
+                    })
+                    .catch((err) => console.log(err));
+                }
+              }}
+            >
+              <Text style={{ color: COLORS.white }}>Edit</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View
+            style={{
+              marginTop: 20,
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 35,
+                width: 120,
+
+                borderWidth: 1,
+                borderColor: COLORS.lightGray,
+                backgroundColor: COLORS.black,
+              }}
+              onPress={async () => {
+                if (validate()) {
+                  const url = await uploadImage();
+                  const data = {
+                    name: name,
+                    servingSize: servingSize,
+                    servingTime: servingTime,
+                    img: url,
+                    category: category,
+                    ingredients: recipeIngredients,
+                  };
+                  fetch(
+                    `https://recipeapp-6vxr.onrender.com/recipe/${userId}`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(data),
+                    }
+                  )
+                    .then((res) => res.json())
+                    .then((data) => {
+                      showSuccessToast("created");
+                    })
+                    .catch((err) => console.log(err));
+                }
+              }}
+            >
+              <Text style={{ color: COLORS.white }}>Create</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

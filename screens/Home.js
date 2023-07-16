@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { FONTS, COLORS, SIZES, icons, images, dummyData } from "../constants";
 import { CategoryCard, TrendingCard } from "../components";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -42,20 +42,22 @@ const Home = ({ navigation }) => {
     }, [])
   );
 
-  useEffect(() => {
-    fetch(
-      `https://recipeapp-6vxr.onrender.com/recipe?search=${search}${
-        category === "" ? "" : "&category=" + category._id
-      }&page=${page}&limit=4`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setResult(data.recipes);
-        setPage(data.page);
-        setTotalPage(data.totalPage);
-      })
-      .catch((err) => console.log(err));
-  }, [category, search]);
+  useFocusEffect(
+    useCallback(() => {
+      fetch(
+        `https://recipeapp-6vxr.onrender.com/recipe?search=${search}${
+          category === "" ? "" : "&category=" + category._id
+        }&page=${page}&limit=4`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setResult(data.recipes);
+          setPage(data.page);
+          setTotalPage(data.totalPage);
+        })
+        .catch((err) => console.log(err));
+    }, [category, search])
+  );
 
   useEffect(() => {
     fetch(`https://recipeapp-6vxr.onrender.com/category`)

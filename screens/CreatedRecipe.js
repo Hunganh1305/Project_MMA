@@ -10,7 +10,6 @@ import Toast from "react-native-toast-message";
 const CreatedRecipe = ({ navigation }) => {
   const [createdRecipe, setCreatedRecipe] = useState([]);
   const [userId, setUserId] = useState(null);
-  console.log(createdRecipe);
 
   const showSuccessToast = (text) => {
     Toast.show({
@@ -226,44 +225,96 @@ const CreatedRecipe = ({ navigation }) => {
                   }}
                 >
                   {item.status === "rejected" && (
-                    <TouchableOpacity
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 80,
-                        backgroundColor: "#00C851",
-                        paddingHorizontal: 10,
-                        paddingVertical: 10,
-                        borderRadius: 5,
-                        //   borderWidth: 1,
-                        //   borderColor: COLORS.lightGray,
-                        //   backgroundColor: COLORS.black,
-                      }}
-                      onPress={() => handelChangeStatus(item._id)}
-                    >
-                      <Text style={{ fontWeight: 600 }}>REAPPLY</Text>
-                    </TouchableOpacity>
+                    <>
+                      <TouchableOpacity
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 80,
+                          backgroundColor: "#00C851",
+                          paddingHorizontal: 10,
+                          paddingVertical: 10,
+                          borderRadius: 5,
+                          //   borderWidth: 1,
+                          //   borderColor: COLORS.lightGray,
+                          //   backgroundColor: COLORS.black,
+                        }}
+                        onPress={() => handelChangeStatus(item._id)}
+                      >
+                        <Text style={{ fontWeight: 600 }}>REAPPLY</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        resizeMode="contain"
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 80,
+                          backgroundColor: "#ff4444",
+                          paddingHorizontal: 10,
+                          paddingVertical: 10,
+                          borderRadius: 5,
+                          //   borderRadius: 18,
+                          //   borderWidth: 1,
+                          //   borderColor: COLORS.lightGray,
+                          //   backgroundColor: COLORS.black,
+                        }}
+                        onPress={() => handleDelete(item._id)}
+                      >
+                        <Text style={{ fontWeight: 600 }}>DELETE</Text>
+                      </TouchableOpacity>
+                    </>
                   )}
-
-                  <TouchableOpacity
-                    resizeMode="contain"
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 80,
-                      backgroundColor: "#ff4444",
-                      paddingHorizontal: 10,
-                      paddingVertical: 10,
-                      borderRadius: 5,
-                      //   borderRadius: 18,
-                      //   borderWidth: 1,
-                      //   borderColor: COLORS.lightGray,
-                      //   backgroundColor: COLORS.black,
-                    }}
-                    onPress={() => handleDelete(item._id)}
-                  >
-                    <Text style={{ fontWeight: 600 }}>DELETE</Text>
-                  </TouchableOpacity>
+                  {item.status === "pending" && (
+                    <>
+                      <TouchableOpacity
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 80,
+                          backgroundColor: "#00C851",
+                          paddingHorizontal: 10,
+                          paddingVertical: 10,
+                          borderRadius: 5,
+                          //   borderWidth: 1,
+                          //   borderColor: COLORS.lightGray,
+                          //   backgroundColor: COLORS.black,
+                        }}
+                        onPress={() => {
+                          fetch(
+                            `https://recipeapp-6vxr.onrender.com/recipe/${item._id}`
+                          )
+                            .then((res) => res.json())
+                            .then((data) => {
+                              navigation.navigate("AddRecipe", {
+                                recipe: data[0],
+                              });
+                            })
+                            .catch((err) => console.log(err));
+                        }}
+                      >
+                        <Text style={{ fontWeight: 600 }}>Edit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        resizeMode="contain"
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 80,
+                          backgroundColor: "#ff4444",
+                          paddingHorizontal: 10,
+                          paddingVertical: 10,
+                          borderRadius: 5,
+                          //   borderRadius: 18,
+                          //   borderWidth: 1,
+                          //   borderColor: COLORS.lightGray,
+                          //   backgroundColor: COLORS.black,
+                        }}
+                        onPress={() => handleDelete(item._id)}
+                      >
+                        <Text style={{ fontWeight: 600 }}>DELETE</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </TouchableOpacity>
             ))}

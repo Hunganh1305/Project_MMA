@@ -24,7 +24,6 @@ const RecipeCreatorCardDetail = ({ selectedRecipe }) => {
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setOwner(data.owner[0]);
         })
         .catch((err) => console.log(err));
@@ -136,7 +135,6 @@ const Recipe = ({ navigation, route }) => {
     fetch(`https://recipeapp-6vxr.onrender.com/recipe/${recipeId}`)
       .then((res) => res.json())
       .then((response) => {
-        console.log("response name", response[0].img);
         setIngredientImg(response[0].img);
       });
   }, []);

@@ -104,7 +104,7 @@ const Favourite = ({ navigation }) => {
           </View>
         ) : (
           recipe.map((item) => (
-            <View>
+            <View key={item._id}>
               <TouchableOpacity
                 style={{
                   flexDirection: "row",
