@@ -35,7 +35,7 @@ const RecipeCreatorCardDetail = ({ selectedRecipe }) => {
       <View style={{ width: 40, height: 40, marginLeft: 20 }}>
         {owner?.img ? (
           <Image
-            resizeMode="contain"
+            resizeMode="cover"
             source={{
               uri: owner.img,
             }}
@@ -43,7 +43,7 @@ const RecipeCreatorCardDetail = ({ selectedRecipe }) => {
           ></Image>
         ) : (
           <Image
-            resizeMode="contain"
+            resizeMode="cover"
             source={{
               uri: "https://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png",
             }}

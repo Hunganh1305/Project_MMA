@@ -132,13 +132,13 @@ const Home = ({ navigation }) => {
           {user &&
             (user.img ? (
               <Image
-                resizeMode="contain"
+                resizeMode="cover"
                 source={{ uri: user.img }}
                 style={{ width: 40, height: 40, borderRadius: 20 }}
               ></Image>
             ) : (
               <Image
-                resizeMode="contain"
+                resizeMode="cover"
                 source={{
                   uri: "https://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png",
                 }}
