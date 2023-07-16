@@ -184,11 +184,10 @@ const Signup = (props) => {
           {/* Text and Button */}
           <View
             style={{
+              alignItems: "flex",
               flexDirection: "row",
               width: "78%",
               paddingRight: 16,
-              alignItems: "center",
-              justifyContent: "center",
               // marginBottom: "4%",
             }}
           >
@@ -212,6 +211,7 @@ const Signup = (props) => {
           </View>
           <View
             style={{
+              alignItems: "flex",
               flexDirection: "row",
               justifyContent: "center",
               width: "78%",
