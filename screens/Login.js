@@ -175,7 +175,7 @@ const Login = (props) => {
             }}
             onChangeText={(text) => handleOnChange(text, "password")}
           />
-          <View
+          {/* <View
             style={{
               alignItems: "flex-end",
               width: "80%",
@@ -192,7 +192,7 @@ const Login = (props) => {
             >
               Forgot Password ?
             </Text>
-          </View>
+          </View> */}
           <Button
             textColor={COLORS.white}
             bgColor={COLORS.darkGreen}

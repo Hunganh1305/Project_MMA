@@ -13,6 +13,8 @@ import Background from "../components/Background";
 import { COLORS } from "../constants";
 import Field from "../components/Field";
 import Button from "../components/Button";
+import { Dropdown } from "react-native-element-dropdown";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Signup = (props) => {
   const [inputs, setInputs] = useState({
@@ -22,6 +24,10 @@ const Signup = (props) => {
     phone: "",
     password: "",
   });
+  const dropdown = [
+    { id: 1, name: "Recipe maker" },
+    { id: 2, name: "Cooker" },
+  ];
   const [errors, setErrors] = useState({});
   const validate = () => {
     Keyboard.dismiss();
@@ -89,13 +95,19 @@ const Signup = (props) => {
     setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
   // console.log(errors);
+  const renderItem = (item) => {
+    return (
+      <View style={{ padding: 10, backgroundColor: "white" }}>
+        <Text style={{ fontSize: 14 }}>{item.name}</Text>
+      </View>
+    );
+  };
   // console.log(inputs);
   return (
     <Background>
       <SafeAreaView
         style={{
           alignItems: "center",
-          width: "100%",
         }}
       >
         <Text
@@ -184,11 +196,11 @@ const Signup = (props) => {
           {/* Text and Button */}
           <View
             style={{
-              alignItems: "flex",
+              // alignItems: "center",
               flexDirection: "row",
               width: "78%",
-              paddingRight: 16,
-              // marginBottom: "4%",
+              justifyContent: "center",
+              marginBottom: "4%",
             }}
           >
             <Text
@@ -211,11 +223,9 @@ const Signup = (props) => {
           </View>
           <View
             style={{
-              alignItems: "flex",
               flexDirection: "row",
-              justifyContent: "center",
               width: "78%",
-              paddingRight: 16,
+              justifyContent: "center",
               marginBottom: "1%",
             }}
           >
@@ -235,7 +245,7 @@ const Signup = (props) => {
                 marginBottom: "4.7%",
               }}
             >
-              Provacy Policy
+              Privacy Policy
             </Text>
           </View>
           <Button
@@ -276,4 +286,33 @@ const Signup = (props) => {
 
 export default Signup;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  dropdown: {
+    height: 40,
+    width: 320,
+    backgroundColor: COLORS.white,
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    borderWidth: 0.7,
+    alignItems: "center",
+    borderColor: COLORS.darkGreen,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    color: COLORS.black,
+    fontSize: 14,
+  },
+  selectedTextStyle: {
+    fontSize: 14,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 30,
+    fontSize: 14,
+  },
+});

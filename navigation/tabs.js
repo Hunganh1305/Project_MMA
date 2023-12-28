@@ -49,7 +49,7 @@ const Tabs = () => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Search"
         component={Home}
         options={{
@@ -57,7 +57,7 @@ const Tabs = () => {
             <TabIcon focused={focused} icon={icons.search} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Favourite"
         component={Favourite}

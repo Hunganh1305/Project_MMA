@@ -72,9 +72,9 @@ const EditFavorite = ({ navigation, route }) => {
 
     if (!date.match(regex)) {
       if (date.slice(-1) < 3 || date.slice(-1) > 5) {
-        showErrorToast("Wrong date !", "Year must from 2023 to 2025");
+        showErrorToast("Wrong date format!", "Year must from 2023 to 2025");
       } else {
-        showErrorToast("Wrong date !", "");
+        showErrorToast("Wrong date format!", "");
       }
       return;
     }
@@ -181,6 +181,7 @@ const EditFavorite = ({ navigation, route }) => {
             style={{
               marginTop: 10,
               flexDirection: "row",
+              alignItems: "center",
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: 500 }}>Date:</Text>
@@ -206,6 +207,7 @@ const EditFavorite = ({ navigation, route }) => {
             style={{
               marginTop: 10,
               flexDirection: "row",
+              alignItems: "center",
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: 500 }}>Meal:</Text>

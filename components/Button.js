@@ -6,6 +6,7 @@ export default function Button({
   btnLabel,
   textColor,
   onPress = () => {},
+  ...others
 }) {
   return (
     <TouchableOpacity
@@ -18,7 +19,8 @@ export default function Button({
         width: "76%",
         height: "4%",
         justifyContent: "center",
-        marginVertical: 10,
+        marginVertical: 20,
+        others,
       }}
     >
       <Text

@@ -566,7 +566,7 @@ const Home = ({ navigation }) => {
             {renderHeader()}
 
             {/* See recipe card */}
-            {renderSeeRecipeCard()}
+            {/* {renderSeeRecipeCard()}  */}
 
             {/* Trending section */}
             {renderTrendingSection()}

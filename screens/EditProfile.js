@@ -63,6 +63,32 @@ const EditProfile = ({ navigation, route }) => {
     }
   };
 
+  const getDocFile = async () => {
+    const blobImage = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", picture, true);
+      xhr.send(null);
+    });
+    try {
+      const storageRef = ref(storage, `test/1.docx`);
+      // const result = await uploadBytes(storageRef, blobImage);
+
+      blobImage.close();
+      let result = await getDownloadURL(storageRef);
+      console.log(result);
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -407,7 +433,7 @@ const EditProfile = ({ navigation, route }) => {
           width: 120,
           borderRadius: 100,
         }}
-        onPress={handleSave}
+        onPress={uploadImg}
       >
         <Text
           style={{
